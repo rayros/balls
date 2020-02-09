@@ -23,7 +23,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
       canvas_height: *height,
       ..state.clone()
     },
-    Action::DrawMenu => State {
+    Action::Draw => State {
       action_text: "draw_menu".to_string(),
       ..state.clone()
     },

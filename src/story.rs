@@ -31,9 +31,9 @@ impl _Story {
         self.story(Action::NewCanvas { canvas, width, height });
       },
       Action::NewCanvas { canvas: _, height: _, width: _ } => {
-        self.story(Action::DrawMenu);
+        self.story(Action::Draw);
       },
-      Action::DrawMenu => {
+      Action::Draw => {
         let state: State = store.borrow().state.clone();
         gui::draw(state);
       },

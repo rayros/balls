@@ -5,7 +5,7 @@ pub enum Action {
   None,
   FontLoaded,
   NewCanvas { canvas: Canvas, width: u32, height: u32 },
-  DrawMenu,
+  Draw,
   WindowResize,
   CanvasResize { width: u32, height: u32 },
   // Move { counter: u8 }

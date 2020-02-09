@@ -8,6 +8,7 @@ pub enum Action {
   Draw,
   WindowResize,
   CanvasResize { width: u32, height: u32 },
+  Click
   // Move { counter: u8 }
 }
 

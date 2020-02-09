@@ -17,7 +17,6 @@ impl fmt::Display for View {
   }
 }
 
-
 #[derive(Default, Clone)]
 pub struct State {
   pub action_text: String,

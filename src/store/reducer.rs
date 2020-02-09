@@ -32,6 +32,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
       canvas_width: *width,
       canvas_height: *height,
       ..state.clone()
-    }
+    },
+    Action::Click => state.clone()
   }
 }

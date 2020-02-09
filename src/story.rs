@@ -1,3 +1,4 @@
+use crate::canvas::watch_click_event;
 use crate::store::{Store, Action, State};
 use crate::gui;
 use std::rc::Rc;
@@ -30,8 +31,8 @@ impl _Story {
         let (canvas, width, height) = gui::create_canvas("#canvas");
         self.story(Action::NewCanvas { canvas, width, height });
       },
-      Action::NewCanvas { canvas: _, height: _, width: _ } => {
-        self.story(Action::Draw);
+      Action::NewCanvas { canvas, height: _, width: _ } => {
+        watch_click_event(story_rc.clone(), canvas);
       },
       Action::Draw => {
         let state: State = store.borrow().state.clone();
@@ -43,9 +44,9 @@ impl _Story {
         let (width, height) = gui::resize_canvas_to_window_size(&canvas.element);
         self.story(Action::CanvasResize { width, height });
       },
-      Action::CanvasResize { width: _, height: _ }=> {
-        let state: State = store.borrow().state.clone();
-        gui::draw(state);
+      Action::CanvasResize { width: _, height: _ } => {},
+      Action::Click => {
+        console!(log, "click");
       }
     }
   }

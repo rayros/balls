@@ -5,7 +5,9 @@ authors = ["rayros <zniwus@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-futures = "0.1"
+redux-rs = "0.1.0"
+futures = "0.3.4"
+promising-future = "0.2.4"
+smart-default = "0.6.0"
 [dependencies.stdweb]
 version = "0.4.20"
-features = ["experimental_features_which_may_break_on_minor_version_bumps"]

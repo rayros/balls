@@ -1,23 +1,38 @@
 #[macro_use]
 extern crate stdweb;
-use stdweb::{Value};
-
-mod fonts;
+mod store;
+mod gui;
+mod story;
+mod canvas;
+use story::{Story, get_story};
+use crate::store::{get_store, Store, Action};
+use stdweb::web::{window, event::ResizeEvent, IEventTarget};
 
 fn main() {
   stdweb::initialize();
+  let store: Store = get_store();
+  let story: Story = get_story(store);
+  window().add_event_listener({
+    let story = story.clone();
+    move |_: ResizeEvent| {
+      story.borrow_mut().story(Action::WindowResize);
+    }
+  });
 
-  let _handle = fonts::load("Amatica SC", "local('Amatica SC'), url(https://fonts.gstatic.com/s/amaticasc/v1/r4IyjqPgTL10SERuDuUzpAzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2')", None)
-    .unwrap()
-    .done(|result: Result<Value, Value>| match result {
-      Ok(value) => {
-        console!(log, value);
-      }
-      Err(error) => {
-        console!(error, error);
-      }
-    })
-    .leak();
+  story.borrow().story(Action::None);
+  // let _handle = fonts::load("Amatica SC", "local('Amatica SC'), url(https://fonts.gstatic.com/s/amaticasc/v1/r4IyjqPgTL10SERuDuUzpAzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2')", None)
+  //   .unwrap()
+  //   .done(move |result: Result<Value, Value>| match result {
+  //     Ok(value) => {
+  //       let store = store.clone();
+  //       store.borrow_mut().dispatch(Action::Move { counter: 3 });
+  //       console!(log, value);
+  //     }
+  //     Err(error) => {
+  //       console!(error, error);
+  //     }
+  //   })
+  //   .leak();
 
   stdweb::event_loop();
 }

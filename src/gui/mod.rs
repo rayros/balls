@@ -1,8 +1,9 @@
 mod fonts;
+mod draw;
 use crate::story::Story;
-use crate::store::State;
 use crate::canvas;
 
+pub use draw::draw;
 pub use canvas::resize_canvas_to_window_size;
 
 pub fn load_fonts(story: Story) {
@@ -20,14 +21,3 @@ pub fn create_canvas(canvas_attr_id: &str) -> (canvas::Canvas, u32, u32) {
   (canvas, width, height)
 }
 
-pub fn draw(store: State) {
-  let canvas = store.canvas.unwrap();
-  let ctx = canvas.ctx;
-  ctx.set_fill_style_color("black");
-  ctx.fill_rect(
-    f64::from(0),
-    f64::from(0),
-    f64::from(canvas.element.width()),
-    f64::from(canvas.element.height()),
-  );
-}

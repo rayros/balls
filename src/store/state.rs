@@ -19,15 +19,15 @@ impl fmt::Display for View {
 
 #[derive(Default, Clone)]
 pub struct Menu {
-  start_button: Button
+  pub start_button: Button
 }
 
 #[derive(Default, Clone)]
 pub struct Button {
-  x: u32,
-  y: u32,
-  width: u32,
-  height: u32
+  pub x: u32,
+  pub y: u32,
+  pub width: u32,
+  pub height: u32
 }
 
 #[derive(Default, Clone)]

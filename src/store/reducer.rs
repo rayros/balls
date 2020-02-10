@@ -29,7 +29,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
   }
 }
 
-pub fn construct_menu(canvas_width: u32, _: u32) -> Menu {
+pub fn construct_menu(canvas_width: i32, _: i32) -> Menu {
   let width = canvas_width - 50;
   Menu {
     start_button: Button {

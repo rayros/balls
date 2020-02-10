@@ -7,9 +7,9 @@ use stdweb::web::{window};
 use stdweb::web::{event::ClickEvent, IEventTarget};
 use stdweb::traits::IMouseEvent;
 
-pub fn resize_canvas_to_window_size(canvas: &CanvasElement) -> (u32, u32) {
-  let width = window().inner_width() as u32;
-  let height = window().inner_height() as u32;
+pub fn resize_canvas_to_window_size(canvas: &CanvasElement) -> (i32, i32) {
+  let width = window().inner_width();
+  let height = window().inner_height();
   canvas.set_width(window().inner_width() as u32);
   canvas.set_height(window().inner_height() as u32);
   (width, height)

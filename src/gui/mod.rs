@@ -15,7 +15,7 @@ pub fn load_fonts(story: Story) {
   );
 }
 
-pub fn create_canvas(canvas_attr_id: &str) -> (canvas::Canvas, u32, u32) {
+pub fn create_canvas(canvas_attr_id: &str) -> (canvas::Canvas, i32, i32) {
   let canvas = canvas::Canvas::new(canvas_attr_id);
   let (width, height) = canvas::resize_canvas_to_window_size(&canvas.element);
   (canvas, width, height)

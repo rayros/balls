@@ -4,11 +4,13 @@ use std::fmt;
 #[derive(Debug, Clone)]
 pub enum View {
   Menu,
-  Game
+  Game,
 }
 
 impl Default for View {
-  fn default() -> Self { View::Menu }
+  fn default() -> Self {
+    View::Menu
+  }
 }
 
 impl fmt::Display for View {
@@ -19,15 +21,21 @@ impl fmt::Display for View {
 
 #[derive(Default, Clone)]
 pub struct Menu {
-  pub start_button: Button
+  pub start_button: Button,
 }
 
 #[derive(Default, Clone)]
 pub struct Button {
-  pub x: u32,
-  pub y: u32,
-  pub width: u32,
-  pub height: u32
+  pub x: i32,
+  pub y: i32,
+  pub width: i32,
+  pub height: i32,
+}
+
+impl Button {
+  pub fn intersect(&self, x: i32, y: i32) -> bool {
+    self.x <= x && x <= self.x + self.width && self.y <= y && y <= self.y + self.height
+  }
 }
 
 #[derive(Default, Clone)]
@@ -37,6 +45,6 @@ pub struct State {
   pub board: Vec<u8>,
   pub counter: u8,
   pub canvas: Option<Canvas>,
-  pub canvas_width: u32,
-  pub canvas_height: u32
+  pub canvas_width: i32,
+  pub canvas_height: i32,
 }

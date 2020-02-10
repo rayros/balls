@@ -1,3 +1,4 @@
+use crate::store::state::View;
 use crate::canvas::Canvas;
 
 #[derive(Clone)]
@@ -8,7 +9,8 @@ pub enum Action {
   Draw,
   WindowResize,
   CanvasResize { width: u32, height: u32 },
-  Click
+  Click { x: i32, y: i32 },
+  ChangeView { view: View }
   // Move { counter: u8 }
 }
 

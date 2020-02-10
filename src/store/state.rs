@@ -18,9 +18,22 @@ impl fmt::Display for View {
 }
 
 #[derive(Default, Clone)]
+pub struct Menu {
+  start_button: Button
+}
+
+#[derive(Default, Clone)]
+pub struct Button {
+  x: u32,
+  y: u32,
+  width: u32,
+  height: u32
+}
+
+#[derive(Default, Clone)]
 pub struct State {
-  pub action_text: String,
   pub view: View,
+  pub menu: Menu,
   pub board: Vec<u8>,
   pub counter: u8,
   pub canvas: Option<Canvas>,

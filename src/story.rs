@@ -1,5 +1,5 @@
 use crate::canvas::watch_click_event;
-use crate::store::{Store, Action, State};
+use crate::store::{Store, Action, State, View};
 use crate::gui;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -45,9 +45,11 @@ impl _Story {
         self.story(Action::CanvasResize { width, height });
       },
       Action::CanvasResize { width: _, height: _ } => {},
-      Action::Click => {
+      Action::Click { x: _, y: _ }=> {
         console!(log, "click");
-      }
+        self.story(Action::ChangeView { view: View::Game })
+      },
+      Action::ChangeView { view: _ } => {}
     }
   }
 

@@ -7,6 +7,7 @@ mod canvas;
 use story::{Story, get_story};
 use crate::store::{get_store, Store, Action};
 use stdweb::web::{window, set_timeout, event::ResizeEvent, IEventTarget};
+mod throttle;
 
 fn game_loop(story: Story) {
   story.borrow_mut().story(Action::Draw);
@@ -33,7 +34,7 @@ fn main() {
   let story: Story = get_story(store);
 
   watch_resize_event(story.clone());
-  game_loop(story.clone());
+  // game_loop(story.clone());
   story.borrow().story(Action::None);
   stdweb::event_loop();
 }

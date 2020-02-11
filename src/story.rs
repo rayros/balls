@@ -1,66 +1,83 @@
 use crate::canvas::watch_click_event;
-use crate::store::{Store, Action, State, View};
 use crate::gui;
-use std::rc::Rc;
+use crate::store::{Action, State, Store, View};
+use crate::throttle::Throttle;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 pub struct _Story {
   pub store: Store,
-  story_rc: Option<Story>
+  story_rc: Option<Story>,
 }
 
 impl _Story {
-  pub fn new(
-    store: Store
-  ) -> _Story {
+  pub fn new(store: Store) -> _Story {
     return _Story {
       store,
-      story_rc: None
+      story_rc: None,
     };
   }
 
-  pub fn story(&self, action: Action) {
+  pub fn story<'a>(&self, action: Action) {
     self.store.borrow_mut().dispatch(action.clone());
     let store = self.store.clone();
     let story_rc = self.story_rc.clone().unwrap();
+    let draw_story_rc = self.story_rc.clone().unwrap();
+    let a = move || {
+      let store = draw_story_rc.clone().borrow().store.clone();
+      gui::draw(store.borrow().state.clone());
+    };
+    let draw_throttle = Throttle::new(a, 1000 / 60);
     match action {
       Action::None => {
         gui::load_fonts(story_rc.clone());
-      },
+      }
       Action::FontLoaded => {
         let (canvas, width, height) = gui::create_canvas("#canvas");
-        self.story(Action::NewCanvas { canvas, width, height });
-      },
-      Action::NewCanvas { canvas, height: _, width: _ } => {
+        self.story(Action::NewCanvas {
+          canvas,
+          width,
+          height,
+        });
+      }
+      Action::NewCanvas {
+        canvas,
+        height: _,
+        width: _,
+      } => {
         self.story(Action::ChangeView { view: View::Game });
         watch_click_event(story_rc.clone(), canvas);
-      },
+      }
       Action::Draw => {
-        let state: State = store.borrow().state.clone();
-        gui::draw(state);
-      },
+        draw_throttle.update();
+      }
       Action::WindowResize => {
         let state: State = store.borrow().state.clone();
         let canvas = state.canvas.unwrap();
         let (width, height) = gui::resize_canvas_to_window_size(&canvas.element);
         self.story(Action::CanvasResize { width, height });
-      },
-      Action::CanvasResize { width: _, height: _ } => {},
-      Action::Click { x, y }=> {
+      }
+      Action::CanvasResize {
+        width: _,
+        height: _,
+      } => {
+        self.story(Action::Draw);
+      }
+      Action::Click { x, y } => {
         let state: State = store.borrow().state.clone();
         match state.view {
-          View::None => {},
+          View::None => {}
           View::Menu => {
             if state.menu.start_button.intersect(x, y) {
               self.story(Action::ChangeView { view: View::Game });
             }
-          },
-          View::Game => {
-
           }
+          View::Game => {}
         }
-      },
-      Action::ChangeView { view: _ } => {}
+      }
+      Action::ChangeView { view: _ } => {
+        gui::draw(store.borrow().state.clone());
+      }
     }
   }
 

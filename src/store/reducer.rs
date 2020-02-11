@@ -11,10 +11,23 @@ pub fn reducer(state: &State, action: &Action) -> State {
     Action::Draw => state.clone(),
     Action::WindowResize => state.clone(),
     Action::Click { x: _, y: _ } => state.clone(),
-    Action::CanvasResize { width, height } => State {
-      canvas_width: *width,
-      canvas_height: *height,
-      ..state.clone()
+    Action::CanvasResize { width, height } => {
+      let state = State {
+        canvas_width: *width,
+        canvas_height: *height,
+        ..state.clone()
+      };
+      match state.view {
+        View::Game => State {
+          game: resize_game(state.clone()),
+          ..state
+        },
+        View::Menu => State {
+          menu: resize_menu(state.clone()),
+          ..state
+        },
+        View::None => state
+      }
     },
     Action::NewCanvas { canvas, width, height } => State {
       canvas: Some(canvas.clone()),
@@ -72,9 +85,13 @@ fn resize_game(state: State) -> Game {
   };
   let board_x = (canvas_width - board_width) / 2;
   let board_y = navigation_height + (canvas_height - navigation_height - board_width) / 2;
+  let line_width = board_width / 100;
+  let cell_width = board_width / 9;
   Game {
     board,
     board_width,
+    line_width,
+    cell_width,
     board_x,
     board_y
   }

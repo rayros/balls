@@ -44,6 +44,8 @@ pub struct Game {
   pub board_x: i32,
   pub board_y: i32,
   pub board_width: i32,
+  pub line_width: i32,
+  pub cell_width: i32,
   pub board: [[u8; 9]; 9]
 }
 

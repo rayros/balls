@@ -57,10 +57,10 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     fill_rect(self, board_x, board_y, board_width, board_width);
     self.set_fill_style_color("#afb2b7");
     for i in 1..9 {
-      fill_rect(self, board_x - line_width / 2 + (cell_width * i), board_y, line_width, board_width);
+      fill_rect(self, board_x - (line_width / 2) + (cell_width * i), board_y, line_width, board_width);
     }
     for i in 1..9 {
-      fill_rect(self, board_x, board_y - line_width / 2 + (cell_width * i), board_width, line_width);
+      fill_rect(self, board_x, board_y - (line_width / 2) + (cell_width * i), board_width, line_width);
     }
     for ball in balls.into_iter() {
       self.draw_ball(ball, cell_width as f64);

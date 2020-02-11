@@ -29,6 +29,9 @@ impl Throttle {
         state.active = true;
         setTimeout(() => {
           state.callback();
+        }, 0);
+        setTimeout(() => {
+          state.callback();
           state.active = false;
         }, state.wait);
       }

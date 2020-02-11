@@ -2,8 +2,10 @@ mod reducer;
 mod store;
 mod action;
 mod state;
+mod view;
+pub use view::View;
 pub use action::Action;
-pub use state::{State, View, Game};
+pub use state::{State, Game};
 use reducer::reducer;
 
 use std::rc::Rc;

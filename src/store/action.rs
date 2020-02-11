@@ -1,4 +1,4 @@
-use crate::store::state::View;
+use crate::store::View;
 use crate::canvas::Canvas;
 
 #[derive(Clone)]
@@ -11,7 +11,6 @@ pub enum Action {
   CanvasResize { width: i32, height: i32 },
   Click { x: i32, y: i32 },
   ChangeView { view: View }
-  // Move { counter: u8 }
 }
 
 impl PartialEq for Action  {

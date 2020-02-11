@@ -6,18 +6,8 @@ mod story;
 mod canvas;
 use story::{Story, get_story};
 use crate::store::{get_store, Store, Action};
-use stdweb::web::{window, set_timeout, event::ResizeEvent, IEventTarget};
+use stdweb::web::{window, event::ResizeEvent, IEventTarget};
 mod throttle;
-
-fn game_loop(story: Story) {
-  story.borrow_mut().story(Action::Draw);
-  
-  set_timeout(|| {
-    window().request_animation_frame(|_| {
-      game_loop(story);
-    });
-  }, 1000 / 60)
-}
 
 fn watch_resize_event(story: Story) {
   window().add_event_listener({

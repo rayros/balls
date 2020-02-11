@@ -3,7 +3,7 @@ mod store;
 mod action;
 mod state;
 pub use action::Action;
-pub use state::{State, View};
+pub use state::{State, View, Game};
 use reducer::reducer;
 
 use std::rc::Rc;

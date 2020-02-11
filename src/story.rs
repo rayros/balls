@@ -32,6 +32,7 @@ impl _Story {
         self.story(Action::NewCanvas { canvas, width, height });
       },
       Action::NewCanvas { canvas, height: _, width: _ } => {
+        self.story(Action::ChangeView { view: View::Game });
         watch_click_event(story_rc.clone(), canvas);
       },
       Action::Draw => {
@@ -45,9 +46,19 @@ impl _Story {
         self.story(Action::CanvasResize { width, height });
       },
       Action::CanvasResize { width: _, height: _ } => {},
-      Action::Click { x: _, y: _ }=> {
-        console!(log, "click");
-        self.story(Action::ChangeView { view: View::Game })
+      Action::Click { x, y }=> {
+        let state: State = store.borrow().state.clone();
+        match state.view {
+          View::None => {},
+          View::Menu => {
+            if state.menu.start_button.intersect(x, y) {
+              self.story(Action::ChangeView { view: View::Game });
+            }
+          },
+          View::Game => {
+
+          }
+        }
       },
       Action::ChangeView { view: _ } => {}
     }
@@ -57,7 +68,6 @@ impl _Story {
     self.story_rc = Some(story);
   }
 }
-
 
 pub type Story = Rc<RefCell<_Story>>;
 

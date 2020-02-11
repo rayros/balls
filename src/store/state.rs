@@ -3,13 +3,14 @@ use std::fmt;
 
 #[derive(Debug, Clone)]
 pub enum View {
+  None,
   Menu,
   Game,
 }
 
 impl Default for View {
   fn default() -> Self {
-    View::Menu
+    View::None
   }
 }
 
@@ -39,11 +40,18 @@ impl Button {
 }
 
 #[derive(Default, Clone)]
+pub struct Game {
+  pub board_x: i32,
+  pub board_y: i32,
+  pub board_width: i32,
+  pub board: [[u8; 9]; 9]
+}
+
+#[derive(Default, Clone)]
 pub struct State {
   pub view: View,
   pub menu: Menu,
-  pub board: Vec<u8>,
-  pub counter: u8,
+  pub game: Game,
   pub canvas: Option<Canvas>,
   pub canvas_width: i32,
   pub canvas_height: i32,

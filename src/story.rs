@@ -40,10 +40,7 @@ impl _Story {
           height,
         });
       }
-      Action::NewCanvas {
-        canvas,
-        ..
-      } => {
+      Action::NewCanvas { canvas, .. } => {
         self.story(Action::ChangeView { view: View::Game });
         watch_click_event(story_rc, canvas);
       }
@@ -71,8 +68,20 @@ impl _Story {
           View::Game => {}
         }
       }
-      Action::ChangeView { .. } => {
+      Action::ChangeView { view } => {
+        match view {
+          View::Game => {
+            let state: State = store.borrow().state.clone();
+            if state.game.balls.len() == 0 {
+              self.story(Action::AddBalls);
+            }
+          }
+          _ => {}
+        }
         gui::draw(store.borrow().state.clone());
+      }
+      Action::AddBalls => {
+        console!(log, "balls added");
       }
     }
   }

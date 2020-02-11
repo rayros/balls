@@ -1,34 +1,13 @@
-use crate::store::Game;
+use crate::store::{Game, Ball};
 use super::fill_rect::fill_rect;
 use crate::store::State;
 use stdweb::web::{CanvasRenderingContext2d, FillRule};
 use std::f64::consts::PI;
 
-struct Ball {
-  color: String,
-  x: f64,
-  y: f64
-}
-
-// impl Ball {
-//   fn new(color: String) -> Ball {
-//     Ball {
-//       color: color,
-//       x: 0.0,
-//       y: 0.0
-//     }
-//   }
-
-//   fn set_cell_position(&mut self, column: u8, row: u8, width: i32) {
-//     self.x = column * 
-//   }
-// }
-
-
 trait DrawGameCtx {
   fn draw_background(&self, width: i32, height: i32);
   fn draw_ball(&self, ball: Ball, width: f64);
-  fn draw_board(&self, game: Game, balls: Vec<Ball>);
+  fn draw_board(&self, game: Game);
 }
 
 impl DrawGameCtx for CanvasRenderingContext2d {
@@ -44,7 +23,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     self.fill(FillRule::NonZero);
   }
 
-  fn draw_board(&self, game: Game, balls: Vec<Ball>) {
+  fn draw_board(&self, game: Game) {
     let Game {
       board_x,
       board_y,
@@ -62,8 +41,8 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     for i in 1..9 {
       fill_rect(self, board_x, board_y - (line_width / 2) + (cell_width * i), board_width, line_width);
     }
-    for ball in balls.into_iter() {
-      self.draw_ball(ball, cell_width as f64);
+    for ball in game.balls.into_iter() {
+      self.draw_ball(ball, cell_width as f64 / 2.0);
     }
   }
 }
@@ -78,6 +57,5 @@ pub fn draw_game(state: State) {
   let canvas = state.canvas.unwrap();
   let ctx = canvas.ctx;
   ctx.draw_background(canvas_width, canvas_height);
-  let balls = vec![];
-  ctx.draw_board(game, balls);
+  ctx.draw_board(game);
 }

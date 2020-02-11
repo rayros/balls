@@ -10,7 +10,8 @@ pub enum Action {
   WindowResize,
   CanvasResize { width: i32, height: i32 },
   Click { x: i32, y: i32 },
-  ChangeView { view: View }
+  ChangeView { view: View },
+  AddBalls
 }
 
 impl PartialEq for Action  {

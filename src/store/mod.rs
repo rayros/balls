@@ -3,9 +3,10 @@ mod store;
 mod action;
 mod state;
 mod view;
+mod find_place_for_ball;
 pub use view::View;
 pub use action::Action;
-pub use state::{State, Game};
+pub use state::{State, Game, Ball};
 use reducer::reducer;
 
 use std::rc::Rc;

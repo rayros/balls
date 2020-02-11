@@ -35,6 +35,10 @@ pub fn reducer(state: &State, action: &Action) -> State {
       canvas_height: *height,
       ..state.clone()
     },
+    Action::AddBalls => State {
+      game: add_balls(state.clone()),
+      ..state.clone()
+    },
     Action::ChangeView { view } => {
       match view {
         View::Game => {
@@ -73,7 +77,7 @@ fn resize_game(state: State) -> Game {
   let State {
     canvas_height,
     canvas_width,
-    game: Game { board, .. },
+    game: Game { board, balls, .. },
     ..
   } = state;
   let navigation_height = 50;
@@ -89,10 +93,26 @@ fn resize_game(state: State) -> Game {
   let cell_width = board_width / 9;
   Game {
     board,
+    balls,
     board_width,
     line_width,
     cell_width,
     board_x,
     board_y
+  }
+}
+
+use super::find_place_for_ball::*;
+
+fn add_balls(state: State) -> Game {
+  let State {
+    game,
+    ..
+  } = state;
+  let (row_index, column_index) = find_place_for_ball(game.board.clone());
+  console!(log, row_index as u32, column_index as u32);
+  console!(log, "Generate balls");
+  Game {
+    ..game
   }
 }

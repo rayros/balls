@@ -78,10 +78,10 @@ impl _Story {
           }
           _ => {}
         }
-        gui::draw(store.borrow().state.clone());
+        self.story(Action::Draw);
       }
       Action::AddBalls => {
-        console!(log, "balls added");
+        self.story(Action::Draw);
       }
     }
   }

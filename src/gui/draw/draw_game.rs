@@ -10,6 +10,13 @@ trait DrawGameCtx {
   fn draw_board(&self, game: Game);
 }
 
+fn color_map(num: u8) -> &'static str {
+  match num {
+    2 => "red",
+    _ => "black"
+  }
+}
+
 impl DrawGameCtx for CanvasRenderingContext2d {
   fn draw_background(&self, width: i32, height: i32) {
     self.set_fill_style_color("#606368");
@@ -19,7 +26,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
   fn draw_ball(&self, ball: Ball, width: f64) {
     self.begin_path();
     self.arc(ball.x, ball.y, width / 2.0, 0.0, 2.0 * PI, false);
-    self.set_fill_style_color(&ball.color);
+    self.set_fill_style_color(color_map(ball.num));
     self.fill(FillRule::NonZero);
   }
 

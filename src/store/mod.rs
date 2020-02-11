@@ -3,7 +3,7 @@ mod store;
 mod action;
 mod state;
 mod view;
-mod find_place_for_ball;
+mod selectors;
 pub use view::View;
 pub use action::Action;
 pub use state::{State, Game, Ball};

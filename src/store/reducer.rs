@@ -102,17 +102,23 @@ fn resize_game(state: State) -> Game {
   }
 }
 
-use super::find_place_for_ball::*;
+use super::selectors::*;
 
 fn add_balls(state: State) -> Game {
   let State {
     game,
     ..
   } = state;
+  let ball_number = gen_ball_number();
   let (row_index, column_index) = find_place_for_ball(game.board.clone());
   console!(log, row_index as u32, column_index as u32);
   console!(log, "Generate balls");
+  let mut board = game.board.clone();
+  board[row_index][column_index].num = ball_number;
+  let balls = get_balls(board.clone());
   Game {
+    board,
+    balls,
     ..game
   }
 }

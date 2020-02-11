@@ -22,12 +22,12 @@ impl Button {
 
 #[derive(Default, Clone)]
 pub struct Ball {
-  pub color: String,
+  pub num: u8,
   pub x: f64,
   pub y: f64
 }
 
-pub type Board = [[u8; 9]; 9];
+pub type Board = [[Ball; 9]; 9];
 
 #[derive(Default, Clone)]
 pub struct Game {

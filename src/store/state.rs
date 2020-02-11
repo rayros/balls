@@ -23,8 +23,7 @@ impl Button {
 #[derive(Default, Clone)]
 pub struct Ball {
   pub num: u8,
-  pub x: f64,
-  pub y: f64
+  pub position: (f64, f64)
 }
 
 pub type Board = [[Ball; 9]; 9];

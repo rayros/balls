@@ -25,7 +25,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
 
   fn draw_ball(&self, ball: Ball, width: f64) {
     self.begin_path();
-    self.arc(ball.x, ball.y, width / 2.0, 0.0, 2.0 * PI, false);
+    self.arc(ball.position.0, ball.position.1, width / 5.0 * 4.0, 0.0, 2.0 * PI, false);
     self.set_fill_style_color(color_map(ball.num));
     self.fill(FillRule::NonZero);
   }
@@ -49,7 +49,9 @@ impl DrawGameCtx for CanvasRenderingContext2d {
       fill_rect(self, board_x, board_y - (line_width / 2) + (cell_width * i), board_width, line_width);
     }
     for ball in game.balls.into_iter() {
-      self.draw_ball(ball, cell_width as f64 / 2.0);
+      if ball.num != 0 {
+        self.draw_ball(ball, cell_width as f64 / 2.0);
+      }
     }
   }
 }

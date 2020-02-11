@@ -1,5 +1,6 @@
 extern crate rand;
 
+use crate::store::state::Game;
 use crate::store::state::Ball;
 use crate::store::state::Board;
 use rand::prelude::*;
@@ -38,10 +39,16 @@ pub fn get_balls(board: Board) -> Vec<Ball> {
       vec.push(board[row_index][column_index].clone());
     } 
   }
-  vec.clone()
+  vec
 }
 
 pub fn gen_ball_number() -> u8 {
   let mut rng = thread_rng();
   rng.gen_range(1, 7)
+}
+
+pub fn get_position_for_ball(game: Game, row_index: usize, column_index: usize) -> (f64, f64) {
+  let x = game.board_x + game.cell_width / 2;
+  let y = game.board_y + game.cell_width / 2;
+  (f64::from(x), f64::from(y))
 }

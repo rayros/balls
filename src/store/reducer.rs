@@ -1,3 +1,4 @@
+use crate::store::state::Ball;
 use crate::store::state::Button;
 use crate::store::state::Menu;
 use crate::store::Action;
@@ -73,6 +74,8 @@ fn resize_menu(state: State) -> Menu {
   }
 }
 
+// fn update_balls_postions() {}
+
 fn resize_game(state: State) -> Game {
   let State {
     canvas_height,
@@ -109,12 +112,13 @@ fn add_balls(state: State) -> Game {
     game,
     ..
   } = state;
-  let ball_number = gen_ball_number();
   let (row_index, column_index) = find_place_for_ball(game.board.clone());
-  console!(log, row_index as u32, column_index as u32);
-  console!(log, "Generate balls");
   let mut board = game.board.clone();
-  board[row_index][column_index].num = ball_number;
+  let ball = Ball {
+    num: gen_ball_number(),
+    position: get_position_for_ball(game.clone(), row_index, column_index)
+  };
+  board[row_index][column_index] = ball;
   let balls = get_balls(board.clone());
   Game {
     board,

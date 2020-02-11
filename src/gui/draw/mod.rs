@@ -14,8 +14,8 @@ pub fn draw(state: State) {
     Some(_canvas) => {
       match state.view {
         View::None => {},
-        View::Menu => draw_menu(state.clone()),
-        View::Game => draw_game(state.clone())
+        View::Menu => draw_menu(state),
+        View::Game => draw_game(state)
       }
     },
     None => {}

@@ -12,13 +12,13 @@ pub struct _Story {
 
 impl _Story {
   pub fn new(store: Store) -> _Story {
-    return _Story {
+    _Story {
       store,
       story_rc: None,
-    };
+    }
   }
 
-  pub fn story<'a>(&self, action: Action) {
+  pub fn story(&self, action: Action) {
     self.store.borrow_mut().dispatch(action.clone());
     let store = self.store.clone();
     let story_rc = self.story_rc.clone().unwrap();
@@ -30,7 +30,7 @@ impl _Story {
     let draw_throttle = Throttle::new(a, 1000 / 60);
     match action {
       Action::None => {
-        gui::load_fonts(story_rc.clone());
+        gui::load_fonts(story_rc);
       }
       Action::FontLoaded => {
         let (canvas, width, height) = gui::create_canvas("#canvas");
@@ -42,11 +42,10 @@ impl _Story {
       }
       Action::NewCanvas {
         canvas,
-        height: _,
-        width: _,
+        ..
       } => {
         self.story(Action::ChangeView { view: View::Game });
-        watch_click_event(story_rc.clone(), canvas);
+        watch_click_event(story_rc, canvas);
       }
       Action::Draw => {
         draw_throttle.update();
@@ -57,10 +56,7 @@ impl _Story {
         let (width, height) = gui::resize_canvas_to_window_size(&canvas.element);
         self.story(Action::CanvasResize { width, height });
       }
-      Action::CanvasResize {
-        width: _,
-        height: _,
-      } => {
+      Action::CanvasResize { .. } => {
         self.story(Action::Draw);
       }
       Action::Click { x, y } => {
@@ -75,7 +71,7 @@ impl _Story {
           View::Game => {}
         }
       }
-      Action::ChangeView { view: _ } => {
+      Action::ChangeView { .. } => {
         gui::draw(store.borrow().state.clone());
       }
     }
@@ -91,5 +87,5 @@ pub type Story = Rc<RefCell<_Story>>;
 pub fn get_story(store: Store) -> Story {
   let store = Rc::new(RefCell::new(_Story::new(store)));
   store.borrow_mut().add_rc(store.clone());
-  return store;
+  store
 }

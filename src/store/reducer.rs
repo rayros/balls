@@ -10,7 +10,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
     Action::FontLoaded => state.clone(),
     Action::Draw => state.clone(),
     Action::WindowResize => state.clone(),
-    Action::Click { x: _, y: _ } => state.clone(),
+    Action::Click { .. } => state.clone(),
     Action::CanvasResize { width, height } => {
       let state = State {
         canvas_width: *width,

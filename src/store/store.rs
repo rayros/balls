@@ -8,10 +8,10 @@ impl<S, A> Store<S, A> {
     reducer: fn(state: &S, action: &A) -> S,
     state: S
   ) -> Store<S, A> {
-    return Store {
+    Store {
       state,
       reducer
-    };
+    }
   }
 
   pub fn dispatch(&mut self, action: A) {

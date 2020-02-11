@@ -17,7 +17,6 @@ pub fn resize_canvas_to_window_size(canvas: &CanvasElement) -> (i32, i32) {
 
 pub fn watch_click_event(story: Story, canvas: Canvas) {
   canvas.element.add_event_listener({
-    let story = story.clone();
     move |event: ClickEvent| {
       let x = event.client_x() as i32;
       let y = event.client_y() as i32;

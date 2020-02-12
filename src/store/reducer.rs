@@ -1,3 +1,4 @@
+use crate::store::state::Board;
 use crate::store::state::Ball;
 use crate::store::state::Button;
 use crate::store::state::Menu;
@@ -74,13 +75,25 @@ fn resize_menu(state: State) -> Menu {
   }
 }
 
-// fn update_balls_postions() {}
+fn update_balls_positions(game: Game) -> Board {
+  let mut board = game.board.clone();
+  for row_index in 0..board.len() {
+    for column_index in 0..board[row_index].len() {
+      let ball = board[row_index][column_index].clone();
+      board[row_index][column_index] = Ball {
+        position: get_position_for_ball(game.clone(), row_index, column_index),
+        ..ball
+      };
+    } 
+  }
+  board
+}
 
 fn resize_game(state: State) -> Game {
   let State {
     canvas_height,
     canvas_width,
-    game: Game { board, balls, .. },
+    game,
     ..
   } = state;
   let navigation_height = 50;
@@ -94,6 +107,8 @@ fn resize_game(state: State) -> Game {
   let board_y = navigation_height + (canvas_height - navigation_height - board_width) / 2;
   let line_width = board_width / 100;
   let cell_width = board_width / 9;
+  let board = update_balls_positions(game.clone());
+  let balls = get_balls(board.clone());
   Game {
     board,
     balls,

@@ -1,3 +1,4 @@
+use crate::store::state::Place;
 use crate::store::state::Ball;
 use crate::store::state::Button;
 use crate::store::state::Menu;
@@ -83,7 +84,7 @@ fn update_balls_positions(game: Game) -> Game {
       match maybe_ball {
         Some(ball) => {
           board[row_index][column_index] = Some(Ball {
-            position: get_position_for_ball(game.clone(), (row_index, column_index)),
+            position: get_position_for_ball(game.clone(), Place { row_index, column_index }),
             ..ball
           });
         },
@@ -146,12 +147,10 @@ fn add_balls(state: State) -> Game {
       let num = gen_ball_number();
       let ball = Ball {
         num,
-        place,
-        position: get_position_for_ball(game.clone(), place)
+        place: place.clone(),
+        position: get_position_for_ball(game.clone(), place.clone())
       };
-      console!(log, "number");  
-      console!(log, num);
-      board[place.0][place.1] = Some(ball);
+      board[place.clone().row_index][place.clone().column_index] = Some(ball);
       let balls = get_balls(board.clone());
       Game {
         board,

@@ -1,12 +1,13 @@
 extern crate rand;
 
+use crate::store::state::Place;
 use crate::store::state::Game;
 use crate::store::state::Ball;
 use crate::store::state::Board;
 use rand::prelude::*;
 
 
-pub fn find_place_for_ball(board: Board) -> Option<(usize, usize)> {
+pub fn find_place_for_ball(board: Board) -> Option<Place> {
   let mut rng = thread_rng();
   let random_column: usize = rng.gen_range(0, 9);
   let random_row: usize = rng.gen_range(0, 9);
@@ -20,7 +21,7 @@ pub fn find_place_for_ball(board: Board) -> Option<(usize, usize)> {
           let maybe_ball = &board[row_index][column_index];
           match maybe_ball {
             None => {
-              result = Some((row_index, column_index));
+              result = Some(Place { row_index, column_index });
               break;
             },
             Some(_ball) => {}
@@ -32,7 +33,7 @@ pub fn find_place_for_ball(board: Board) -> Option<(usize, usize)> {
           let maybe_ball = &board[row_index][column_index];
           match maybe_ball {
             None => {
-              result = Some((row_index, column_index));
+              result = Some(Place { row_index, column_index });
               break;
             },
             Some(_ball) => {}
@@ -41,7 +42,7 @@ pub fn find_place_for_ball(board: Board) -> Option<(usize, usize)> {
       }
       result
     },
-    None => Some((random_row, random_column))
+    None => Some(Place { row_index: random_row, column_index: random_column })
   }
 }
 
@@ -66,10 +67,10 @@ pub fn gen_ball_number() -> u8 {
   rng.gen_range(1, 7)
 }
 
-pub fn get_position_for_ball(game: Game, place: (usize, usize)) -> (f64, f64) {
+pub fn get_position_for_ball(game: Game, place: Place) -> (f64, f64) {
   // console!(log, row_index as u32);
   // console!(log, column_index as u32);
-  let x = game.board_x + game.cell_width / 2 + game.line_width / 4 + place.1 as i32 * game.cell_width;
-  let y = game.board_y + game.cell_width / 2 + game.line_width / 4 + place.0 as i32 * game.cell_width;
+  let x = game.board_x + game.cell_width / 2 + game.line_width / 4 + place.column_index as i32 * game.cell_width;
+  let y = game.board_y + game.cell_width / 2 + game.line_width / 4 + place.row_index as i32 * game.cell_width;
   (f64::from(x), f64::from(y))
 }

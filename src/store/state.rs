@@ -21,10 +21,16 @@ impl Button {
 }
 
 #[derive(Default, Clone)]
+pub struct Place {
+  pub row_index: usize,
+  pub column_index: usize
+}
+
+#[derive(Default, Clone)]
 pub struct Ball {
   pub num: u8,
   pub position: (f64, f64),
-  pub place: (usize, usize)
+  pub place: Place
 }
 
 pub type Board = [[Option<Ball>; 9]; 9];

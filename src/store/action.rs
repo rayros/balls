@@ -1,3 +1,4 @@
+use crate::store::state::Ball;
 use crate::store::View;
 use crate::canvas::Canvas;
 
@@ -11,7 +12,8 @@ pub enum Action {
   CanvasResize { width: i32, height: i32 },
   Click { x: i32, y: i32 },
   ChangeView { view: View },
-  AddBalls
+  AddBalls,
+  SelectBall { ball: Ball }
 }
 
 impl PartialEq for Action  {

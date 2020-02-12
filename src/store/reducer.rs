@@ -1,4 +1,3 @@
-use crate::store::state::Board;
 use crate::store::state::Ball;
 use crate::store::state::Button;
 use crate::store::state::Menu;
@@ -59,7 +58,8 @@ pub fn reducer(state: &State, action: &Action) -> State {
         },
         _ => state.clone()
       }
-    }
+    },
+    Action::SelectBall { .. } => state.clone()
   }
 }
 
@@ -75,18 +75,26 @@ fn resize_menu(state: State) -> Menu {
   }
 }
 
-fn update_balls_positions(game: Game) -> Board {
+fn update_balls_positions(game: Game) -> Game {
   let mut board = game.board.clone();
   for row_index in 0..board.len() {
     for column_index in 0..board[row_index].len() {
-      let ball = board[row_index][column_index].clone();
-      board[row_index][column_index] = Ball {
-        position: get_position_for_ball(game.clone(), row_index, column_index),
-        ..ball
-      };
+      let maybe_ball = board[row_index][column_index].clone();
+      match maybe_ball {
+        Some(ball) => {
+          board[row_index][column_index] = Some(Ball {
+            position: get_position_for_ball(game.clone(), (row_index, column_index)),
+            ..ball
+          });
+        },
+        None => {}
+      }
     } 
   }
-  board
+  Game {
+    board,
+    ..game
+  }
 }
 
 fn resize_game(state: State) -> Game {
@@ -107,16 +115,20 @@ fn resize_game(state: State) -> Game {
   let board_y = navigation_height + (canvas_height - navigation_height - board_width) / 2;
   let line_width = board_width / 100;
   let cell_width = board_width / 9;
-  let board = update_balls_positions(game.clone());
-  let balls = get_balls(board.clone());
-  Game {
-    board,
-    balls,
+  // console!(log, balls[0].num);
+  let game = Game {
     board_width,
     line_width,
     cell_width,
     board_x,
-    board_y
+    board_y,
+    ..game
+  };
+  let game = update_balls_positions(game.clone());
+  let balls = get_balls(game.board.clone());
+  Game {
+    balls,
+    ..game
   }
 }
 
@@ -127,17 +139,29 @@ fn add_balls(state: State) -> Game {
     game,
     ..
   } = state;
-  let (row_index, column_index) = find_place_for_ball(game.board.clone());
-  let mut board = game.board.clone();
-  let ball = Ball {
-    num: gen_ball_number(),
-    position: get_position_for_ball(game.clone(), row_index, column_index)
-  };
-  board[row_index][column_index] = ball;
-  let balls = get_balls(board.clone());
-  Game {
-    board,
-    balls,
-    ..game
+  let maybe_find_place = find_place_for_ball(game.board.clone());
+  match maybe_find_place {
+    Some(place) => {
+      let mut board = game.board.clone();
+      let num = gen_ball_number();
+      let ball = Ball {
+        num,
+        place,
+        position: get_position_for_ball(game.clone(), place)
+      };
+      console!(log, "number");  
+      console!(log, num);
+      board[place.0][place.1] = Some(ball);
+      let balls = get_balls(board.clone());
+      Game {
+        board,
+        balls,
+        ..game
+      }
+    },
+    None => Game {
+      isGameOver: true,
+      ..game
+    }
   }
 }

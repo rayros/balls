@@ -1,9 +1,14 @@
+use crate::store::Ball;
 use crate::canvas::watch_click_event;
 use crate::gui;
 use crate::store::{Action, State, Store, View};
 use crate::throttle::Throttle;
 use std::cell::RefCell;
 use std::rc::Rc;
+
+fn maybe_ball_intersect(ball: Vec<Ball>, x: i32, y: i32) -> Option<Ball> {
+  Some(ball[0].clone())
+}
 
 pub struct _Story {
   pub store: Store,
@@ -65,7 +70,12 @@ impl _Story {
               self.story(Action::ChangeView { view: View::Game });
             }
           }
-          View::Game => {}
+          View::Game => {
+            let maybe_click_ball = maybe_ball_intersect(state.game.balls, x, y);
+            if let Some(ball) = maybe_click_ball {
+              self.story(Action::SelectBall { ball });
+            }
+          }
         }
       }
       Action::ChangeView { view } => {
@@ -73,7 +83,10 @@ impl _Story {
           View::Game => {
             let state: State = store.borrow().state.clone();
             if state.game.balls.len() == 0 {
-              self.story(Action::AddBalls);
+              for _x in 0..10 {
+                self.story(Action::AddBalls);
+              }
+              
             }
           }
           _ => {}
@@ -82,6 +95,9 @@ impl _Story {
       }
       Action::AddBalls => {
         self.story(Action::Draw);
+      }
+      Action::SelectBall { .. }=> {
+
       }
     }
   }

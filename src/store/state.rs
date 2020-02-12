@@ -23,10 +23,16 @@ impl Button {
 #[derive(Default, Clone)]
 pub struct Ball {
   pub num: u8,
-  pub position: (f64, f64)
+  pub position: (f64, f64),
+  pub place: (usize, usize)
 }
 
-pub type Board = [[Ball; 9]; 9];
+pub type Board = [[Option<Ball>; 9]; 9];
+
+#[derive(Default, Clone)]
+pub struct SelectedBall {
+  ball: Ball
+}
 
 #[derive(Default, Clone)]
 pub struct Game {
@@ -36,7 +42,9 @@ pub struct Game {
   pub line_width: i32,
   pub cell_width: i32,
   pub board: Board,
-  pub balls: Vec<Ball>
+  pub balls: Vec<Ball>,
+  pub isGameOver: bool,
+  pub selected_ball: Option<SelectedBall>
 }
 
 #[derive(Default, Clone)]

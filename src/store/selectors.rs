@@ -11,17 +11,17 @@ pub fn find_place_for_ball(board: Board) -> Option<Place> {
   let mut rng = thread_rng();
   let random_column: usize = rng.gen_range(0, 9);
   let random_row: usize = rng.gen_range(0, 9);
-  // let board = board.clone();
   let maybe_ball: Option<Ball> = board[random_row][random_column].clone();
   match maybe_ball {
+    None => Some(Place { row_index: random_row, column_index: random_column }),
     Some(_ball) => {
-      let mut result = None;
+      let mut place = None;
       for row_index in random_row..board.len() {
         for column_index in random_column..board[row_index].len() {
           let maybe_ball = &board[row_index][column_index];
           match maybe_ball {
             None => {
-              result = Some(Place { row_index, column_index });
+              place = Some(Place { row_index, column_index });
               break;
             },
             Some(_ball) => {}
@@ -33,16 +33,15 @@ pub fn find_place_for_ball(board: Board) -> Option<Place> {
           let maybe_ball = &board[row_index][column_index];
           match maybe_ball {
             None => {
-              result = Some(Place { row_index, column_index });
+              place = Some(Place { row_index, column_index });
               break;
             },
             Some(_ball) => {}
           }
         } 
       }
-      result
-    },
-    None => Some(Place { row_index: random_row, column_index: random_column })
+      place
+    }
   }
 }
 

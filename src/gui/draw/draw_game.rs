@@ -6,7 +6,7 @@ use std::f64::consts::PI;
 
 trait DrawGameCtx {
   fn draw_background(&self, width: i32, height: i32);
-  fn draw_ball(&self, ball: Ball, width: f64);
+  fn draw_ball(&self, ball: Ball);
   fn draw_board(&self, game: Game);
 }
 
@@ -23,9 +23,9 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     fill_rect(self, 0, 0, width, height);
   }
 
-  fn draw_ball(&self, ball: Ball, width: f64) {
+  fn draw_ball(&self, ball: Ball) {
     self.begin_path();
-    self.arc(ball.position.0, ball.position.1, width / 5.0 * 4.0, 0.0, 2.0 * PI, false);
+    self.arc(ball.position.0, ball.position.1, f64::from(ball.radius), 0.0, 2.0 * PI, false);
     self.set_fill_style_color(color_map(ball.num));
     self.fill(FillRule::NonZero);
   }
@@ -50,7 +50,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     }
     for ball in game.balls.into_iter() {
       if ball.num != 0 {
-        self.draw_ball(ball, cell_width as f64 / 2.0);
+        self.draw_ball(ball);
       }
     }
   }

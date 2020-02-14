@@ -76,7 +76,7 @@ fn resize_menu(state: State) -> Menu {
   }
 }
 
-fn update_balls_positions(game: Game) -> Game {
+fn update_balls(game: Game) -> Game {
   let mut board = game.board.clone();
   for row_index in 0..board.len() {
     for column_index in 0..board[row_index].len() {
@@ -84,6 +84,7 @@ fn update_balls_positions(game: Game) -> Game {
       match maybe_ball {
         Some(ball) => {
           board[row_index][column_index] = Some(Ball {
+            radius: game.cell_width / 2 / 5 * 4,
             position: get_position_for_ball(game.clone(), Place { row_index, column_index }),
             ..ball
           });
@@ -125,7 +126,7 @@ fn resize_game(state: State) -> Game {
     board_y,
     ..game
   };
-  let game = update_balls_positions(game.clone());
+  let game = update_balls(game.clone());
   let balls = get_balls(game.board.clone());
   Game {
     balls,
@@ -147,6 +148,7 @@ fn add_balls(state: State) -> Game {
       let num = gen_ball_number();
       let ball = Ball {
         num,
+        radius: game.cell_width / 2 / 5 * 4,
         place: place.clone(),
         position: get_position_for_ball(game.clone(), place.clone())
       };

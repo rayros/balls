@@ -6,8 +6,11 @@ use crate::throttle::Throttle;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-fn maybe_ball_intersect(ball: Vec<Ball>, x: i32, y: i32) -> Option<Ball> {
-  Some(ball[0].clone())
+fn maybe_ball_intersect(balls: Vec<Ball>, x: i32, y: i32) -> Option<Ball> {
+  let maybe_ball = balls.into_iter().find(|ball| {
+    ball.intersect(x, y)
+  });
+  maybe_ball
 }
 
 pub struct _Story {

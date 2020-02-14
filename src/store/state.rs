@@ -29,8 +29,16 @@ pub struct Place {
 #[derive(Default, Clone)]
 pub struct Ball {
   pub num: u8,
+  pub radius: i32,
   pub position: (f64, f64),
   pub place: Place
+}
+
+impl Ball {
+  pub fn intersect(&self, x: i32, y: i32) -> bool {
+    true
+    // self.x <= x && x <= self.x + self.width && self.y <= y && y <= self.y + self.height
+  }
 }
 
 pub type Board = [[Option<Ball>; 9]; 9];

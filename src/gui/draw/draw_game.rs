@@ -25,7 +25,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
 
   fn draw_ball(&self, ball: Ball) {
     self.begin_path();
-    self.arc(ball.position.0, ball.position.1, f64::from(ball.radius), 0.0, 2.0 * PI, false);
+    self.arc(f64::from(ball.position.0), f64::from(ball.position.1), f64::from(ball.radius), 0.0, 2.0 * PI, false);
     self.set_fill_style_color(color_map(ball.num));
     self.fill(FillRule::NonZero);
   }

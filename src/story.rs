@@ -32,7 +32,8 @@ impl _Story {
     let story_rc = self.story_rc.clone().unwrap();
     let draw_story_rc = self.story_rc.clone().unwrap();
     let a = move || {
-      let store = draw_story_rc.clone().borrow().store.clone();
+      let store = draw_story_rc.clone().borrow_mut().store.clone();
+      console!(log, "draw", store.borrow().state.game.clone());
       gui::draw(store.borrow().state.clone());
     };
     let draw_throttle = Throttle::new(a, 1000 / 60);
@@ -99,8 +100,8 @@ impl _Story {
       Action::AddBalls => {
         self.story(Action::Draw);
       }
-      Action::SelectBall { .. }=> {
-
+      Action::SelectBall { .. } => {
+        self.story(Action::Draw);
       }
     }
   }

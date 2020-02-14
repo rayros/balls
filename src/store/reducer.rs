@@ -60,9 +60,34 @@ pub fn reducer(state: &State, action: &Action) -> State {
         _ => state.clone()
       }
     },
-    Action::SelectBall { .. } => state.clone()
+    Action::SelectBall { ball } => select_ball(state.clone(), ball.clone())
   }
 }
+
+fn select_ball(state: State, ball: Ball) -> State {
+  let State {
+    game,
+    ..
+  } = state;
+  let mut board = game.board.clone();
+  let selected_ball = game.selected_ball.clone();
+  if let Some(selected_ball) = selected_ball {
+    board[selected_ball.place.row_index][selected_ball.place.column_index] = Some(selected_ball.clone());
+  }
+  board[ball.place.row_index][ball.place.column_index] = None;
+  let balls = get_balls(board.clone());
+  let game = Game {
+    board,
+    selected_ball: Some(ball),
+    balls,
+    ..game
+  };
+  State {
+    game,
+    ..state
+  }
+}
+
 
 fn resize_menu(state: State) -> Menu {
   let width = state.canvas_width - 50;
@@ -93,8 +118,17 @@ fn update_balls(game: Game) -> Game {
       }
     } 
   }
+  let selected_ball = match game.clone().selected_ball {
+    Some(ball) => Some(Ball {
+      radius: game.cell_width / 2 / 5 * 4,
+      position: get_position_for_ball(game.clone(), ball.clone().place),
+      ..ball
+    }),
+    None => None
+  };
   Game {
     board,
+    selected_ball,
     ..game
   }
 }
@@ -150,7 +184,7 @@ fn add_balls(state: State) -> Game {
         num,
         radius: game.cell_width / 2 / 5 * 4,
         place: place.clone(),
-        position: get_position_for_ball(game.clone(), place.clone())
+        position: get_position_for_ball(game.clone(), place.clone()),
       };
       board[place.clone().row_index][place.clone().column_index] = Some(ball);
       let balls = get_balls(board.clone());

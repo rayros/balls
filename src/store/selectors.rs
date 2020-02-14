@@ -66,10 +66,10 @@ pub fn gen_ball_number() -> u8 {
   rng.gen_range(1, 7)
 }
 
-pub fn get_position_for_ball(game: Game, place: Place) -> (f64, f64) {
+pub fn get_position_for_ball(game: Game, place: Place) -> (i32, i32) {
   // console!(log, row_index as u32);
   // console!(log, column_index as u32);
   let x = game.board_x + game.cell_width / 2 + game.line_width / 4 + place.column_index as i32 * game.cell_width;
   let y = game.board_y + game.cell_width / 2 + game.line_width / 4 + place.row_index as i32 * game.cell_width;
-  (f64::from(x), f64::from(y))
+  (x, y)
 }

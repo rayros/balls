@@ -6,5 +6,6 @@ edition = "2018"
 
 [dependencies]
 rand = {version = "0.7.3", features = ['stdweb']}
+serde = { version = "1.0.104", features = ["derive"] }
 [dependencies.stdweb]
 version = "0.4.20"

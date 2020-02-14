@@ -1,5 +1,6 @@
-use crate::store::View;
 use crate::canvas::Canvas;
+use crate::store::View;
+use serde::Serialize;
 
 #[derive(Default, Clone)]
 pub struct Menu {
@@ -20,35 +21,34 @@ impl Button {
   }
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Serialize, Clone)]
 pub struct Place {
   pub row_index: usize,
-  pub column_index: usize
+  pub column_index: usize,
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Serialize, Clone)]
 pub struct Ball {
   pub num: u8,
   pub radius: i32,
-  pub position: (f64, f64),
-  pub place: Place
+  pub position: (i32, i32),
+  pub place: Place,
 }
+
+js_serializable!( Ball );
 
 impl Ball {
   pub fn intersect(&self, x: i32, y: i32) -> bool {
-    true
-    // self.x <= x && x <= self.x + self.width && self.y <= y && y <= self.y + self.height
+    self.position.0 - self.radius <= x
+      && x <= self.position.0 + self.radius
+      && self.position.1 - self.radius <= y
+      && y <= self.position.1 + self.radius
   }
 }
 
 pub type Board = [[Option<Ball>; 9]; 9];
 
-#[derive(Default, Clone)]
-pub struct SelectedBall {
-  ball: Ball
-}
-
-#[derive(Default, Clone)]
+#[derive(Default, Serialize, Clone)]
 pub struct Game {
   pub board_x: i32,
   pub board_y: i32,
@@ -58,8 +58,10 @@ pub struct Game {
   pub board: Board,
   pub balls: Vec<Ball>,
   pub isGameOver: bool,
-  pub selected_ball: Option<SelectedBall>
+  pub selected_ball: Option<Ball>,
 }
+
+js_serializable!( Game );
 
 #[derive(Default, Clone)]
 pub struct State {

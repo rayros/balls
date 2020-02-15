@@ -1,4 +1,4 @@
-use crate::game::{Game, Ball, State};
+use crate::game::{Game, Ball, State, SelectedBall};
 use super::fill_rect::fill_rect;
 use stdweb::web::{CanvasRenderingContext2d, FillRule};
 use std::f64::consts::PI;
@@ -7,7 +7,7 @@ trait DrawGameCtx {
   fn draw_background(&self, width: i32, height: i32);
   fn draw_board(&self, game: Game);
   fn draw_ball(&self, ball: Ball);
-  fn draw_selected_ball(&self, ball: Ball);
+  fn draw_selected_ball(&self, selected_ball: SelectedBall);
 }
 
 fn color_map(num: u8) -> &'static str {
@@ -53,16 +53,19 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     self.close_path();
   }
 
-  fn draw_selected_ball(&self, ball: Ball) {
-    let stroke_width = ball.radius / 10;
+  fn draw_selected_ball(&self, selected_ball: SelectedBall) {
+    let stroke_width = selected_ball.ball.radius / 10;
     self.set_stroke_style_color("black");
     self.set_line_width(stroke_width as f64);
     self.begin_path();
-    self.arc(f64::from(ball.position.0), f64::from(ball.position.1), f64::from(ball.radius - stroke_width / 2), 0.0, 2.0 * PI, false);
-    self.set_fill_style_color(selected_color_map(ball.num));
+    self.arc(f64::from(selected_ball.ball.position.0), f64::from(selected_ball.ball.position.1), f64::from(selected_ball.ball.radius - stroke_width / 2), 0.0, 2.0 * PI, false);
+    if selected_ball.is_selected_color == true {
+      self.set_fill_style_color(selected_color_map(selected_ball.ball.num));
+    } else {
+      self.set_fill_style_color(color_map(selected_ball.ball.num));
+    }
     self.fill(FillRule::NonZero);
     self.close_path();
-    // self.stroke();
   }
 
   fn draw_board(&self, game: Game) {
@@ -89,7 +92,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
       }
     }
     if let Some(selected_ball) = game.selected_ball {
-      self.draw_selected_ball(selected_ball.ball);
+      self.draw_selected_ball(selected_ball);
     }
   }
 }

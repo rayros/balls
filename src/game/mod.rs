@@ -9,3 +9,5 @@ pub use state::Game;
 pub use state::Ball;
 pub use view::View;
 pub use reducer::reducer;
+pub use state::SelectedBall;
+pub use selectors::equal_place;

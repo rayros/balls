@@ -13,7 +13,8 @@ pub enum Action {
   Click { x: i32, y: i32 },
   ChangeView { view: View },
   AddBalls,
-  SelectBall { ball: Ball }
+  SelectBall { maybe_ball: Option<Ball> },
+  ChangeSelectedBallColor { ball: Ball }
 }
 
 impl PartialEq for Action  {

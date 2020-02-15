@@ -50,8 +50,11 @@ pub type Board = [[Option<Ball>; 9]; 9];
 
 #[derive(Default, Serialize, Clone)]
 pub struct SelectedBall {
-  pub ball: Ball
+  pub ball: Ball,
+  pub is_selected_color: bool
 }
+
+js_serializable!( SelectedBall );
 
 #[derive(Default, Serialize, Clone)]
 pub struct Game {

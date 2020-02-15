@@ -1,15 +1,14 @@
-use crate::store::Store;
 use crate::canvas::watch_click_event;
+use crate::game::{Action, Ball, State, View, equal_place};
 use crate::gui;
-use crate::game::{Action, State, View, Ball};
+use crate::store::Store;
 use crate::throttle::Throttle;
 use std::cell::RefCell;
 use std::rc::Rc;
+use stdweb::web::set_timeout;
 
 fn maybe_ball_intersect(balls: Vec<Ball>, x: i32, y: i32) -> Option<Ball> {
-  let maybe_ball = balls.into_iter().find(|ball| {
-    ball.intersect(x, y)
-  });
+  let maybe_ball = balls.into_iter().find(|ball| ball.intersect(x, y));
   maybe_ball
 }
 
@@ -76,12 +75,14 @@ impl _Story {
           }
           View::Game => {
             let maybe_click_ball = maybe_ball_intersect(state.game.balls, x, y);
-            if let Some(ball) = maybe_click_ball {
-              self.story(Action::SelectBall { ball });
-            }
-            if let Some(selected_ball) = state.game.selected_ball {
-              if selected_ball.ball.intersect(x, y) {
-                self.story(Action::SelectBall { ball: selected_ball.ball });
+            match maybe_click_ball {
+              Some(ball) => {
+                self.story(Action::SelectBall {
+                  maybe_ball: Some(ball),
+                });
+              }
+              None => {
+                self.story(Action::SelectBall { maybe_ball: None });
               }
             }
           }
@@ -95,7 +96,6 @@ impl _Story {
               for _x in 0..10 {
                 self.story(Action::AddBalls);
               }
-              
             }
           }
           _ => {}
@@ -105,8 +105,26 @@ impl _Story {
       Action::AddBalls => {
         self.story(Action::Draw);
       }
-      Action::SelectBall { .. } => {
+      Action::SelectBall { maybe_ball } => {
+        if let Some(ball) = maybe_ball {
+          self.story(Action::ChangeSelectedBallColor { ball });
+        }
+      }
+      Action::ChangeSelectedBallColor { ball } => {
         self.story(Action::Draw);
+        if let Some(selected_ball) = store.borrow().state.game.selected_ball.clone() {
+          if equal_place(selected_ball.ball.place, ball.clone().place) {
+            let story = self.story_rc.clone().unwrap();
+            set_timeout(
+              move || {
+                story
+                  .borrow()
+                  .story(Action::ChangeSelectedBallColor { ball });
+              },
+              300,
+            );
+          }
+        }
       }
     }
   }

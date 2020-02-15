@@ -1,10 +1,11 @@
-use crate::store::state::Place;
+use crate::store::state::SelectedBall;
+use super::{Game, View};
 use crate::store::state::Ball;
 use crate::store::state::Button;
 use crate::store::state::Menu;
+use crate::store::state::Place;
 use crate::store::Action;
 use crate::store::State;
-use super::{View, Game};
 
 pub fn reducer(state: &State, action: &Action) -> State {
   match action {
@@ -28,10 +29,14 @@ pub fn reducer(state: &State, action: &Action) -> State {
           menu: resize_menu(state.clone()),
           ..state
         },
-        View::None => state
+        View::None => state,
       }
-    },
-    Action::NewCanvas { canvas, width, height } => State {
+    }
+    Action::NewCanvas {
+      canvas,
+      width,
+      height,
+    } => State {
       canvas: Some(canvas.clone()),
       canvas_width: *width,
       canvas_height: *height,
@@ -41,53 +46,53 @@ pub fn reducer(state: &State, action: &Action) -> State {
       game: add_balls(state.clone()),
       ..state.clone()
     },
-    Action::ChangeView { view } => {
-      match view {
-        View::Game => {
-          State {
-            view: view.clone(),
-            game: resize_game(state.clone()),
-            ..state.clone()
-          }
-        },
-        View::Menu => {
-          State {
-            view: view.clone(),
-            menu: resize_menu(state.clone()),
-            ..state.clone()
-          }
-        },
-        _ => state.clone()
-      }
+    Action::ChangeView { view } => match view {
+      View::Game => State {
+        view: view.clone(),
+        game: resize_game(state.clone()),
+        ..state.clone()
+      },
+      View::Menu => State {
+        view: view.clone(),
+        menu: resize_menu(state.clone()),
+        ..state.clone()
+      },
+      _ => state.clone(),
     },
-    Action::SelectBall { ball } => select_ball(state.clone(), ball.clone())
+    Action::SelectBall { ball } => select_ball(state.clone(), ball.clone()),
   }
 }
 
 fn select_ball(state: State, ball: Ball) -> State {
-  let State {
-    game,
-    ..
-  } = state;
+  let State { game, .. } = state;
   let mut board = game.board.clone();
   let selected_ball = game.selected_ball.clone();
   if let Some(selected_ball) = selected_ball {
-    board[selected_ball.place.row_index][selected_ball.place.column_index] = Some(selected_ball.clone());
+    board[selected_ball.ball.place.row_index][selected_ball.ball.place.column_index] =
+      Some(selected_ball.ball.clone());
+    if selected_ball.ball.place.row_index == ball.place.row_index
+      && selected_ball.ball.place.column_index == ball.place.column_index
+    {
+      let balls = get_balls(board.clone());
+      let game = Game {
+        board,
+        selected_ball: None,
+        balls,
+        ..game
+      };
+      return State { game, ..state };
+    }
   }
   board[ball.place.row_index][ball.place.column_index] = None;
   let balls = get_balls(board.clone());
   let game = Game {
     board,
-    selected_ball: Some(ball),
+    selected_ball: Some(SelectedBall { ball }),
     balls,
     ..game
   };
-  State {
-    game,
-    ..state
-  }
+  State { game, ..state }
 }
-
 
 fn resize_menu(state: State) -> Menu {
   let width = state.canvas_width - 50;
@@ -96,9 +101,13 @@ fn resize_menu(state: State) -> Menu {
       x: 25,
       y: 25,
       width,
-      height: 50
-    }
+      height: 50,
+    },
   }
+}
+
+fn get_radius(cell_width: i32) -> i32 {
+  cell_width / 2 / 5 * 4
 }
 
 fn update_balls(game: Game) -> Game {
@@ -109,22 +118,30 @@ fn update_balls(game: Game) -> Game {
       match maybe_ball {
         Some(ball) => {
           board[row_index][column_index] = Some(Ball {
-            radius: game.cell_width / 2 / 5 * 4,
-            position: get_position_for_ball(game.clone(), Place { row_index, column_index }),
+            radius: get_radius(game.cell_width),
+            position: get_position_for_ball(
+              game.clone(),
+              Place {
+                row_index,
+                column_index,
+              },
+            ),
             ..ball
           });
-        },
+        }
         None => {}
       }
-    } 
+    }
   }
   let selected_ball = match game.clone().selected_ball {
-    Some(ball) => Some(Ball {
-      radius: game.cell_width / 2 / 5 * 4,
-      position: get_position_for_ball(game.clone(), ball.clone().place),
-      ..ball
+    Some(selected_ball) => Some(SelectedBall {
+      ball: Ball {
+        radius: get_radius(game.cell_width),
+        position: get_position_for_ball(game.clone(), selected_ball.ball.clone().place),
+        ..selected_ball.ball
+      }
     }),
-    None => None
+    None => None,
   };
   Game {
     board,
@@ -151,7 +168,6 @@ fn resize_game(state: State) -> Game {
   let board_y = navigation_height + (canvas_height - navigation_height - board_width) / 2;
   let line_width = board_width / 100;
   let cell_width = board_width / 9;
-  // console!(log, balls[0].num);
   let game = Game {
     board_width,
     line_width,
@@ -162,19 +178,13 @@ fn resize_game(state: State) -> Game {
   };
   let game = update_balls(game.clone());
   let balls = get_balls(game.board.clone());
-  Game {
-    balls,
-    ..game
-  }
+  Game { balls, ..game }
 }
 
 use super::selectors::*;
 
 fn add_balls(state: State) -> Game {
-  let State {
-    game,
-    ..
-  } = state;
+  let State { game, .. } = state;
   let maybe_find_place = find_place_for_ball(game.board.clone());
   match maybe_find_place {
     Some(place) => {
@@ -182,7 +192,7 @@ fn add_balls(state: State) -> Game {
       let num = gen_ball_number();
       let ball = Ball {
         num,
-        radius: game.cell_width / 2 / 5 * 4,
+        radius: get_radius(game.cell_width),
         place: place.clone(),
         position: get_position_for_ball(game.clone(), place.clone()),
       };
@@ -193,10 +203,10 @@ fn add_balls(state: State) -> Game {
         balls,
         ..game
       }
-    },
+    }
     None => Game {
       isGameOver: true,
       ..game
-    }
+    },
   }
 }

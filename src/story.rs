@@ -33,7 +33,7 @@ impl _Story {
     let draw_story_rc = self.story_rc.clone().unwrap();
     let a = move || {
       let store = draw_story_rc.clone().borrow_mut().store.clone();
-      console!(log, "draw", store.borrow().state.game.clone());
+      // console!(log, "draw", store.borrow().state.game.clone());
       gui::draw(store.borrow().state.clone());
     };
     let draw_throttle = Throttle::new(a, 1000 / 60);
@@ -78,6 +78,11 @@ impl _Story {
             let maybe_click_ball = maybe_ball_intersect(state.game.balls, x, y);
             if let Some(ball) = maybe_click_ball {
               self.story(Action::SelectBall { ball });
+            }
+            if let Some(selected_ball) = state.game.selected_ball {
+              if selected_ball.ball.intersect(x, y) {
+                self.story(Action::SelectBall { ball: selected_ball.ball });
+              }
             }
           }
         }

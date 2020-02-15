@@ -6,13 +6,36 @@ use std::f64::consts::PI;
 
 trait DrawGameCtx {
   fn draw_background(&self, width: i32, height: i32);
-  fn draw_ball(&self, ball: Ball);
   fn draw_board(&self, game: Game);
+  fn draw_ball(&self, ball: Ball);
+  fn draw_selected_ball(&self, ball: Ball);
 }
 
 fn color_map(num: u8) -> &'static str {
   match num {
-    2 => "red",
+    1 => "#f44336",
+    2 => "#e91e63",
+    3 => "#9c27b0",
+    4 => "#9c27b0",
+    5 => "#3f51b5",
+    6 => "#2196f3",
+    7 => "#03a9f4",
+    8 => "#00bcd4",
+    _ => "black"
+  }
+}
+
+fn selected_color_map(num: u8) -> &'static str {
+  match num {
+    1 => "#b71c1c",
+    2 => "#880e4f",
+    3 => "#4a148c",
+    4 => "#311b92",
+    5 => "#1a237e",
+    6 => "#0d47a1",
+    7 => "#01579b",
+    8 => "#006064",
+
     _ => "black"
   }
 }
@@ -28,6 +51,19 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     self.arc(f64::from(ball.position.0), f64::from(ball.position.1), f64::from(ball.radius), 0.0, 2.0 * PI, false);
     self.set_fill_style_color(color_map(ball.num));
     self.fill(FillRule::NonZero);
+    self.close_path();
+  }
+
+  fn draw_selected_ball(&self, ball: Ball) {
+    let stroke_width = ball.radius / 10;
+    self.set_stroke_style_color("black");
+    self.set_line_width(stroke_width as f64);
+    self.begin_path();
+    self.arc(f64::from(ball.position.0), f64::from(ball.position.1), f64::from(ball.radius - stroke_width / 2), 0.0, 2.0 * PI, false);
+    self.set_fill_style_color(selected_color_map(ball.num));
+    self.fill(FillRule::NonZero);
+    self.close_path();
+    // self.stroke();
   }
 
   fn draw_board(&self, game: Game) {
@@ -52,6 +88,9 @@ impl DrawGameCtx for CanvasRenderingContext2d {
       if ball.num != 0 {
         self.draw_ball(ball);
       }
+    }
+    if let Some(selected_ball) = game.selected_ball {
+      self.draw_selected_ball(selected_ball.ball);
     }
   }
 }

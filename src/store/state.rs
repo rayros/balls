@@ -49,6 +49,11 @@ impl Ball {
 pub type Board = [[Option<Ball>; 9]; 9];
 
 #[derive(Default, Serialize, Clone)]
+pub struct SelectedBall {
+  pub ball: Ball
+}
+
+#[derive(Default, Serialize, Clone)]
 pub struct Game {
   pub board_x: i32,
   pub board_y: i32,
@@ -58,7 +63,7 @@ pub struct Game {
   pub board: Board,
   pub balls: Vec<Ball>,
   pub isGameOver: bool,
-  pub selected_ball: Option<Ball>,
+  pub selected_ball: Option<SelectedBall>
 }
 
 js_serializable!( Game );

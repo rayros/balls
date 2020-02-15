@@ -1,11 +1,15 @@
-use crate::store::state::SelectedBall;
-use super::{Game, View};
-use crate::store::state::Ball;
-use crate::store::state::Button;
-use crate::store::state::Menu;
-use crate::store::state::Place;
-use crate::store::Action;
-use crate::store::State;
+
+use crate::game::state::Place;
+use crate::game::state::Button;
+use crate::game::state::Menu;
+use crate::game::state::SelectedBall;
+use crate::game::state::Game;
+use crate::game::state::Ball;
+use crate::game::state::State;
+use crate::game::action::Action;
+use crate::game::view::View;
+
+use super::selectors::*;
 
 pub fn reducer(state: &State, action: &Action) -> State {
   match action {
@@ -181,7 +185,6 @@ fn resize_game(state: State) -> Game {
   Game { balls, ..game }
 }
 
-use super::selectors::*;
 
 fn add_balls(state: State) -> Game {
   let State { game, .. } = state;

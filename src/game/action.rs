@@ -1,5 +1,5 @@
-use crate::store::state::Ball;
-use crate::store::View;
+use crate::game::state::Ball;
+use crate::game::view::View;
 use crate::canvas::Canvas;
 
 #[derive(Clone)]

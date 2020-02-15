@@ -1,4 +1,4 @@
-use crate::store::State;
+use crate::game::State;
 use super::fill_rect::fill_rect;
 
 pub fn draw_menu(state: State) {

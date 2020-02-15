@@ -1,9 +1,9 @@
 extern crate rand;
 
-use crate::store::state::Place;
-use crate::store::state::Game;
-use crate::store::state::Ball;
-use crate::store::state::Board;
+use crate::game::state::Game;
+use crate::game::state::Ball;
+use crate::game::state::Place;
+use crate::game::state::Board;
 use rand::prelude::*;
 
 

@@ -1,19 +1,29 @@
-mod reducer;
-mod store;
-mod action;
-mod state;
-mod view;
-mod selectors;
-pub use view::View;
-pub use action::Action;
-pub use state::{State, Game, Ball};
-use reducer::reducer;
-
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub type Store = Rc<RefCell<store::Store<State, Action>>>;
+pub struct _Store<S, A> {
+  pub state: S,
+  reducer: fn(state: &S, action: &A) -> S,
+}
 
-pub fn get_store() -> Store {
-  Rc::new(RefCell::new(store::Store::new(reducer, State::default())))
+impl<S, A> _Store<S, A> {
+  pub fn new(
+    reducer: fn(state: &S, action: &A) -> S,
+    state: S
+  ) -> _Store<S, A> {
+    _Store {
+      state,
+      reducer
+    }
+  }
+
+  pub fn dispatch(&mut self, action: A) {
+    self.state = (self.reducer)(&self.state, &action);
+  }
+}
+
+pub type Store<S, A> = Rc<RefCell<_Store<S, A>>>;
+
+pub fn get_store<S: Default, A>(reducer: fn(state: &S, action: &A) -> S) -> Store<S, A> {
+  Rc::new(RefCell::new(_Store::new(reducer, S::default())))
 }

@@ -1,5 +1,5 @@
+use crate::game::view::View;
 use crate::canvas::Canvas;
-use crate::store::View;
 use serde::Serialize;
 
 #[derive(Default, Clone)]

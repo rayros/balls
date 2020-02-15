@@ -1,4 +1,4 @@
-use crate::store::{State, View};
+use crate::game::{State, View};
 mod draw_menu;
 mod fill_rect;
 mod draw_game;

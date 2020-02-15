@@ -1,7 +1,7 @@
-use crate::store::Ball;
+use crate::store::Store;
 use crate::canvas::watch_click_event;
 use crate::gui;
-use crate::store::{Action, State, Store, View};
+use crate::game::{Action, State, View, Ball};
 use crate::throttle::Throttle;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -14,12 +14,12 @@ fn maybe_ball_intersect(balls: Vec<Ball>, x: i32, y: i32) -> Option<Ball> {
 }
 
 pub struct _Story {
-  pub store: Store,
+  pub store: Store<State, Action>,
   story_rc: Option<Story>,
 }
 
 impl _Story {
-  pub fn new(store: Store) -> _Story {
+  pub fn new(store: Store<State, Action>) -> _Story {
     _Story {
       store,
       story_rc: None,
@@ -118,7 +118,7 @@ impl _Story {
 
 pub type Story = Rc<RefCell<_Story>>;
 
-pub fn get_story(store: Store) -> Story {
+pub fn get_story(store: Store<State, Action>) -> Story {
   let store = Rc::new(RefCell::new(_Story::new(store)));
   store.borrow_mut().add_rc(store.clone());
   store

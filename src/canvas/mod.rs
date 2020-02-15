@@ -1,5 +1,5 @@
 mod canvas;
-use crate::store::Action;
+use crate::game::Action;
 use crate::story::{Story};
 pub use canvas::Canvas;
 use stdweb::web::html_element::CanvasElement;

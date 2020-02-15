@@ -1,5 +1,5 @@
 use crate::story::Story;
-use crate::store::Action;
+use crate::game::Action;
 use std::collections::HashMap;
 use stdweb::{Object};
 

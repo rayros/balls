@@ -1,6 +1,5 @@
-use crate::store::{Game, Ball};
+use crate::game::{Game, Ball, State};
 use super::fill_rect::fill_rect;
-use crate::store::State;
 use stdweb::web::{CanvasRenderingContext2d, FillRule};
 use std::f64::consts::PI;
 

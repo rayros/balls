@@ -262,7 +262,7 @@ fn add_balls(state: State) -> Game {
       }
     }
     None => Game {
-      isGameOver: true,
+      is_game_over: true,
       ..game
     },
   }

@@ -65,7 +65,7 @@ pub struct Game {
   pub cell_width: i32,
   pub board: Board,
   pub balls: Vec<Ball>,
-  pub isGameOver: bool,
+  pub is_game_over: bool,
   pub selected_ball: Option<SelectedBall>
 }
 

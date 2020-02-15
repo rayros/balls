@@ -176,7 +176,7 @@ fn resize_game(state: State) -> Game {
     board_y,
     ..game
   };
-  let game = update_balls(game.clone());
+  let game = update_balls(game);
   let balls = get_balls(game.board.clone());
   Game { balls, ..game }
 }
@@ -196,7 +196,8 @@ fn add_balls(state: State) -> Game {
         place: place.clone(),
         position: get_position_for_ball(game.clone(), place.clone()),
       };
-      board[place.clone().row_index][place.clone().column_index] = Some(ball);
+      let Place { row_index, column_index } = place;
+      board[row_index][column_index] = Some(ball);
       let balls = get_balls(board.clone());
       Game {
         board,

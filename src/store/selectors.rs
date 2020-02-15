@@ -47,16 +47,12 @@ pub fn find_place_for_ball(board: Board) -> Option<Place> {
 
 pub fn get_balls(board: Board) -> Vec<Ball> {
   let mut vec = vec![];
-  for row_index in 0..board.len() {
-    for column_index in 0..board[row_index].len() {
-      let maybe_ball = board[row_index][column_index].clone();
-      match maybe_ball {
-        Some(ball) => {
-          vec.push(ball);
-        },
-        None => {}
+  for board_rows in board.iter() {
+    for maybe_ball in board_rows.iter() {
+      if let Some(ball) = maybe_ball {
+        vec.push(ball.clone());
       }
-    } 
+    }
   }
   vec
 }

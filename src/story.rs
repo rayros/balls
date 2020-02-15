@@ -91,7 +91,7 @@ impl _Story {
         match view {
           View::Game => {
             let state: State = store.borrow().state.clone();
-            if state.game.balls.len() == 0 {
+            if state.game.balls.is_empty() {
               for _x in 0..10 {
                 self.story(Action::AddBalls);
               }

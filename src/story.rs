@@ -1,5 +1,5 @@
 use crate::canvas::watch_click_event;
-use crate::game::{Action, Ball, State, View, equal_place};
+use crate::game::{Action, Ball, State, View, equal_place, maybe_place_intersect, find_path};
 use crate::gui;
 use crate::store::Store;
 use crate::throttle::Throttle;
@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use stdweb::web::set_timeout;
 
-fn maybe_ball_intersect(balls: Vec<Ball>, x: i32, y: i32) -> Option<Ball> {
+fn maybe_ball_intersect(balls: &Vec<Ball>, x: i32, y: i32) -> Option<&Ball> {
   let maybe_ball = balls.into_iter().find(|ball| ball.intersect(x, y));
   maybe_ball
 }
@@ -74,15 +74,39 @@ impl _Story {
             }
           }
           View::Game => {
-            let maybe_click_ball = maybe_ball_intersect(state.game.balls, x, y);
+            let maybe_click_ball = maybe_ball_intersect(&state.game.balls, x, y);
             match maybe_click_ball {
               Some(ball) => {
                 self.story(Action::SelectBall {
-                  maybe_ball: Some(ball),
+                  maybe_ball: Some(ball.clone()),
                 });
               }
               None => {
-                self.story(Action::SelectBall { maybe_ball: None });
+                console!(log, "none");
+                let maybe_selected_ball = state.game.selected_ball.clone();
+                match maybe_selected_ball {
+                  Some(selected_ball) => {
+                    let maybe_place_on_board = maybe_place_intersect(&state.game, x, y);
+                    match maybe_place_on_board {
+                      Some(place) => {
+                        let path = find_path(&state.game.board, selected_ball.ball.place, place);
+                        match path {
+                          Some(path) => {
+                            console!(log, path.len() as i32);
+                          },
+                          None => {}
+                        }
+                        
+                      },
+                      None => {
+                        self.story(Action::SelectBall { maybe_ball: None });
+                      }
+                    }
+                  },
+                  None => {
+                    self.story(Action::SelectBall { maybe_ball: None });
+                  }
+                }
               }
             }
           }

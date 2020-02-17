@@ -1,3 +1,4 @@
+use crate::game::state::Board;
 use crate::game::action::Action;
 use crate::game::state::Ball;
 use crate::game::state::Button;
@@ -83,9 +84,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
         },
         None => state.clone()
       }
-    }
-    
-    
+    } 
   }
 }
 

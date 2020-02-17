@@ -74,6 +74,19 @@ pub fn gen_ball_number() -> u8 {
   rng.gen_range(1, 7)
 }
 
+pub fn maybe_place_intersect(game: &Game, x: i32, y: i32) -> Option<Place> {
+  let start_x = x - game.board_x;
+  let start_y = y - game.board_y;
+  if start_x > 0 && start_y > 0 {
+    let column_index = f64::from(start_x / game.cell_width).floor() as usize;
+    let row_index = f64::from(start_y / game.cell_width).floor() as usize;
+    if row_index < game.board.len() && column_index < game.board[row_index].len() {
+      return Some(Place { row_index, column_index });
+    }
+  }
+  None
+}
+
 pub fn get_position_for_ball(game: Game, place: Place) -> (i32, i32) {
   // console!(log, row_index as u32);
   // console!(log, column_index as u32);

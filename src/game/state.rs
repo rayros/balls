@@ -24,8 +24,10 @@ impl Button {
 #[derive(Default, Serialize, Clone)]
 pub struct Place {
   pub row_index: usize,
-  pub column_index: usize,
+  pub column_index: usize
 }
+
+js_serializable!( Place );
 
 #[derive(Default, Serialize, Clone)]
 pub struct Ball {

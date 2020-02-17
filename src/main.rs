@@ -26,7 +26,6 @@ fn main() {
   let story: Story = get_story(store);
 
   watch_resize_event(story.clone());
-  // game_loop(story.clone());
   story.borrow().story(Action::None);
   stdweb::event_loop();
 }

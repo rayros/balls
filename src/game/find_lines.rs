@@ -7,8 +7,8 @@ use serde::Serialize;
 // +1 ball => +4 points
 #[derive(Default, Serialize, Clone)]
 pub struct Line {
-  balls: Vec<Ball>,
-  points: u32,
+  pub balls: Vec<Ball>,
+  pub points: u32,
 }
 
 js_serializable!(Line);
@@ -19,6 +19,8 @@ pub fn find_lines(board: &Board) -> Vec<Line> {
   let diagonal_right = check_diagonal_right(&board);
   let columns = check_columns(&board);
   let rows = check_rows(&board);
+  // console!(log, "find_lines");
+  // console!(log, board.clone());
   [
     &rows[..],
     &columns[..],
@@ -106,6 +108,10 @@ fn check_column(board: &Vec<Vec<Option<Ball>>>, column_index: usize) -> Vec<Line
   };
   for row in board.iter() {
     check_lines = check_cell(check_lines, &row[column_index]);
+    // if column_index == 8 {
+    //   console!(log, "8");
+    //   console!(log, check_lines.clone());
+    // }
   }
   check_lines.lines
 }
@@ -126,6 +132,9 @@ fn check_row(board: &Vec<Vec<Option<Ball>>>, row_index: usize) -> Vec<Line> {
   };
   for column in board[row_index].iter() {
     check_lines = check_cell(check_lines, column);
+    // if row_index == 0 {
+    //   console!(log, check_lines.clone());
+    // }
   }
   check_lines.lines
 }
@@ -151,6 +160,10 @@ fn check_cell(check_lines: CheckLines, cell: &Option<Ball>) -> CheckLines {
       } else {
         if balls[0].num == ball.num {
           balls.push(ball.clone());
+          if balls.len() >= 5 {
+            lines.push(create_line(balls.clone()));
+            balls = vec![];
+          }
         } else {
           if balls_count >= 5 {
             lines.push(create_line(balls.clone()));

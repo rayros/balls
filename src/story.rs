@@ -90,7 +90,11 @@ impl _Story {
                         let path = find_path(&state.game.board, selected_ball.ball.place, place);
                         match path {
                           Some(path) => {
-                            self.story(Action::MoveBall { path });
+                            if path.len() < 2 {
+                              self.story(Action::SelectBall { maybe_ball: None });
+                            } else {
+                              self.story(Action::MoveBall { path });
+                            }
                           },
                           None => {}
                         }
@@ -151,7 +155,9 @@ impl _Story {
         self.story(Action::AddBalls);
         self.story(Action::CheckLines);
       },
-      Action::CheckLines => {}
+      Action::CheckLines => {
+        self.story(Action::Draw);
+      }
     }
   }
 

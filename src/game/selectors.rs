@@ -57,7 +57,7 @@ pub fn find_place_for_ball(board: Board) -> Option<Place> {
   }
 }
 
-pub fn get_balls(board: Board) -> Vec<Ball> {
+pub fn get_balls(board: &Board) -> Vec<Ball> {
   let mut vec = vec![];
   for board_rows in board.iter() {
     for maybe_ball in board_rows.iter() {

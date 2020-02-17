@@ -100,19 +100,34 @@ pub fn reducer(state: &State, action: &Action) -> State {
 }
 
 fn check_lines(state: &State) -> State {
-  let board = state.game.board.clone();
-  state.clone()
+  let mut board = state.game.board.clone();
+  let mut points = 0;
+  let lines = find_lines(&state.game.board);
+  for line in lines.clone() {
+    points += line.points;
+    for ball in line.balls {
+      board[ball.place.row_index][ball.place.column_index] = None;
+    }
+  }
+  // console!(log, lines.clone());
+  let balls = get_balls(&board);
+  // console!(log, balls.clone());
+  State {
+    game: Game {
+      board,
+      balls,
+      ..state.game.clone()
+    },
+    ..state.clone()
+  }
 }
-
-
-
 
 fn add_selected_ball_to_board(state: &State, selected_ball: SelectedBall) -> State {
   let game = state.game.clone();
   let mut board = game.board;
   board[selected_ball.ball.place.row_index][selected_ball.ball.place.column_index] =
     Some(selected_ball.ball.clone());
-  let balls = get_balls(board.clone());
+  let balls = get_balls(&board);
   let game = Game {
     board,
     selected_ball: None,
@@ -135,7 +150,7 @@ fn select_ball(state: State, maybe_ball: Option<Ball>) -> State {
         board[selected_ball.ball.place.row_index][selected_ball.ball.place.column_index] =
           Some(selected_ball.ball.clone());
         board[ball.place.row_index][ball.place.column_index] = None;
-        let balls = get_balls(board.clone());
+        let balls = get_balls(&board);
         let game = Game {
           board,
           selected_ball: Some(SelectedBall {
@@ -149,7 +164,7 @@ fn select_ball(state: State, maybe_ball: Option<Ball>) -> State {
       }
       None => {
         board[ball.place.row_index][ball.place.column_index] = None;
-        let balls = get_balls(board.clone());
+        let balls = get_balls(&board);
         let game = Game {
           board,
           selected_ball: Some(SelectedBall {
@@ -253,7 +268,7 @@ fn resize_game(state: State) -> Game {
     ..game
   };
   let game = update_balls(game);
-  let balls = get_balls(game.board.clone());
+  let balls = get_balls(&game.board);
   Game { balls, ..game }
 }
 
@@ -262,8 +277,6 @@ fn add_balls(state: State, num: usize) -> State {
   for _x in 0..num {
     state = add_ball(state);
   }
-  let lines = find_lines(&state.game.board);
-  console!(log, lines);
   state
 }
 
@@ -285,7 +298,7 @@ fn add_ball(state: State) -> State {
         column_index,
       } = place;
       board[row_index][column_index] = Some(ball);
-      let balls = get_balls(board.clone());
+      let balls = get_balls(&board);
       State {
         game: Game {
           board,

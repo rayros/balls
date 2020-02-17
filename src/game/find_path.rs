@@ -90,7 +90,6 @@ fn get_path(place: Place, map_of_paths: &Vec<Vec<Option<PathPlace>>>) -> Path {
   let mut path = vec![];
   let mut maybe_path_place = map_of_paths[place.row_index][place.column_index].clone();
   while let Some(path_place) = maybe_path_place {
-    console!(log, path_place.clone());
     path.push(path_place.place);
     match path_place.place_before {
       Some(place) => {

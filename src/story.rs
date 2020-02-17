@@ -82,7 +82,6 @@ impl _Story {
                 });
               }
               None => {
-                console!(log, "none");
                 let maybe_selected_ball = state.game.selected_ball.clone();
                 match maybe_selected_ball {
                   Some(selected_ball) => {

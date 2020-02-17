@@ -1,3 +1,4 @@
+use crate::game::find_path::Path;
 use crate::game::state::Ball;
 use crate::game::view::View;
 use crate::canvas::Canvas;
@@ -14,7 +15,9 @@ pub enum Action {
   ChangeView { view: View },
   AddBalls,
   SelectBall { maybe_ball: Option<Ball> },
-  ChangeSelectedBallColor { ball: Ball }
+  ChangeSelectedBallColor { ball: Ball },
+  MoveBall { path: Path },
+  CheckLines
 }
 
 impl PartialEq for Action  {

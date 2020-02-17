@@ -5,9 +5,9 @@ use crate::game::state::Board;
 use crate::game::state::Place;
 use serde::Serialize;
 
-type Path = Vec<Place>;
+pub type Path = Vec<Place>;
 
-pub fn find_path(board: &Board, start_place: Place, stop_place: Place) -> Option<Path> {
+pub fn board_static_to_vec(board: &Board) -> Vec<Vec<Option<Ball>>> {
   let mut board_2d_vec: Vec<Vec<Option<Ball>>> = vec![];
   for row_item in board.iter() {
     let mut row_item_vec = vec![];
@@ -16,7 +16,12 @@ pub fn find_path(board: &Board, start_place: Place, stop_place: Place) -> Option
     }
     board_2d_vec.push(row_item_vec);
   }
-  find_path_2d(board_2d_vec, start_place, stop_place)
+  board_2d_vec
+}
+
+pub fn find_path(board: &Board, start_place: Place, stop_place: Place) -> Option<Path> {
+  let board = board_static_to_vec(board);
+  find_path_2d(board, start_place, stop_place)
 }
 
 #[derive(Default, Serialize, Clone)]

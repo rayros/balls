@@ -32,7 +32,6 @@ impl _Story {
     let draw_story_rc = self.story_rc.clone().unwrap();
     let a = move || {
       let store = draw_story_rc.clone().borrow_mut().store.clone();
-      // console!(log, "draw", store.borrow().state.game.clone());
       gui::draw(store.borrow().state.clone());
     };
     let draw_throttle = Throttle::new(a, 1000 / 60);
@@ -91,7 +90,7 @@ impl _Story {
                         let path = find_path(&state.game.board, selected_ball.ball.place, place);
                         match path {
                           Some(path) => {
-                            console!(log, path.len() as i32);
+                            self.story(Action::MoveBall { path });
                           },
                           None => {}
                         }
@@ -116,9 +115,7 @@ impl _Story {
           View::Game => {
             let state: State = store.borrow().state.clone();
             if state.game.balls.is_empty() {
-              for _x in 0..10 {
-                self.story(Action::AddBalls);
-              }
+              self.story(Action::AddBalls);
             }
           }
           _ => {}
@@ -148,7 +145,13 @@ impl _Story {
             );
           }
         }
-      }
+      },
+      Action::MoveBall { .. } => {
+        self.story(Action::Draw);
+        self.story(Action::AddBalls);
+        self.story(Action::CheckLines);
+      },
+      Action::CheckLines => {}
     }
   }
 

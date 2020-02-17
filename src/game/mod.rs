@@ -4,6 +4,7 @@ mod state;
 mod view;
 mod selectors;
 mod find_path;
+mod find_lines;
 pub use state::State;
 pub use action::Action;
 pub use state::Game;

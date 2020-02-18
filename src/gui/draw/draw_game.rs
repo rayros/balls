@@ -10,33 +10,21 @@ trait DrawGameCtx {
   fn draw_selected_ball(&self, selected_ball: SelectedBall);
 }
 
-fn color_map(num: u8) -> &'static str {
-  match num {
-    1 => "#f44336",
-    2 => "#e91e63",
-    3 => "#9c27b0",
-    4 => "#673ab7",
-    5 => "#3f51b5",
-    6 => "#2196f3",
-    7 => "#03a9f4",
-    8 => "#00bcd4",
-    _ => "black"
-  }
-}
-
-fn selected_color_map(num: u8) -> &'static str {
-  match num {
-    1 => "#b71c1c",
-    2 => "#880e4f",
-    3 => "#4a148c",
-    4 => "#311b92",
-    5 => "#1a237e",
-    6 => "#0d47a1",
-    7 => "#01579b",
-    8 => "#006064",
-
-    _ => "black"
-  }
+fn color_map(num: u8, selected: Option<bool>) -> &'static str {
+  let selected = selected.unwrap_or(false);
+  let color = match num {
+    1 => ("#f44336", "#b71c1c"),
+    2 => ("#9c27b0", "#4a148c"),
+    3 => ("#3f51b5", "#1a237e"),
+    4 => ("#03a9f4", "#01579b"),
+    5 => ("#009688", "#004d40"),
+    6 => ("#8bc34a", "#33691e"),
+    7 => ("#ffeb3b", "#f57f17"),
+    8 => ("#f57f17", "#e65100"),
+    9 => ("#795548", "#3e2723"),
+    _ => ("black", "black")
+  };
+  if selected { color.1 } else { color.0 }
 }
 
 impl DrawGameCtx for CanvasRenderingContext2d {
@@ -48,7 +36,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
   fn draw_ball(&self, ball: Ball) {
     self.begin_path();
     self.arc(f64::from(ball.position.0), f64::from(ball.position.1), f64::from(ball.radius), 0.0, 2.0 * PI, false);
-    self.set_fill_style_color(color_map(ball.num));
+    self.set_fill_style_color(color_map(ball.num, None));
     self.fill(FillRule::NonZero);
     self.close_path();
   }
@@ -60,9 +48,9 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     self.begin_path();
     self.arc(f64::from(selected_ball.ball.position.0), f64::from(selected_ball.ball.position.1), f64::from(selected_ball.ball.radius - stroke_width / 2), 0.0, 2.0 * PI, false);
     if selected_ball.is_selected_color == true {
-      self.set_fill_style_color(selected_color_map(selected_ball.ball.num));
+      self.set_fill_style_color(color_map(selected_ball.ball.num, Some(true)));
     } else {
-      self.set_fill_style_color(color_map(selected_ball.ball.num));
+      self.set_fill_style_color(color_map(selected_ball.ball.num, None));
     }
     self.fill(FillRule::NonZero);
     self.close_path();

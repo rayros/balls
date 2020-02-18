@@ -1,6 +1,6 @@
 use crate::game::find_path::board_static_to_vec;
-use crate::game::state::Board;
 use crate::game::state::Ball;
+use crate::game::state::Board;
 use serde::Serialize;
 
 // 5 balls => 10 points
@@ -36,6 +36,9 @@ fn get_points(balls_count: u32) -> u32 {
 
 fn create_line(balls: Vec<Ball>) -> Line {
   let balls_count = balls.len() as u32;
+  if balls_count < 5 {
+    console!(log, "Wrong", balls_count);
+  }
   Line {
     balls: balls,
     points: get_points(balls_count),
@@ -101,13 +104,147 @@ fn check_columns(board: &[Vec<Option<Ball>>]) -> Vec<Line> {
   lines
 }
 
+#[cfg(test)]
+mod tests {
+  use crate::game::state::Place;
+  use super::*;
+  use std::panic;
+
+  fn board_mock_to_vec(board: Vec<Vec<&str>>) -> Vec<Vec<Option<Ball>>> {
+    let mut board_2d_vec: Vec<Vec<Option<Ball>>> = vec![];
+    for row_item in board.iter() {
+      let mut row_item_vec = vec![];
+      for item in row_item.iter().cloned() {
+        if item == "" {
+          row_item_vec.push(None);
+        } else {
+          row_item_vec.push(Some(Ball {
+            num: item.parse().unwrap(),
+            place: Place {
+              row_index: 0,
+              column_index: 0,
+            },
+            position: (0, 0),
+            radius: 0,
+          }))
+        }
+      }
+      board_2d_vec.push(row_item_vec);
+    }
+    board_2d_vec
+  }
+
+  #[test]
+  fn test_check_columns() {
+    let board = board_mock_to_vec(vec![
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+    ]);
+    let lines = check_columns(&board);
+    let points = lines[0].points;
+    console!(log, "");
+    assert_eq!(points, 14, "Expected {} to be {}", points, 14);
+
+    let board = board_mock_to_vec(vec![
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", "1"],
+      vec!["", "", "", "", "", ""],
+    ]);
+    let lines = check_columns(&board);
+    let points = lines[0].points;
+    console!(log, "");
+    assert_eq!(points, 10, "Expected {} to be {}", points, 10);
+
+    let board = board_mock_to_vec(vec![
+      vec!["", "", "", "", "2", "1"],
+      vec!["", "", "", "", "2", "1"],
+      vec!["", "", "", "", "2", "1"],
+      vec!["", "", "", "", "2", "1"],
+      vec!["", "", "", "", "2", "1"],
+      vec!["", "", "", "", "", "1"],
+    ]);
+    let lines = check_columns(&board);
+    console!(log, "");
+    assert_eq!(lines[0].points, 10, "Expected {} to be {}", points, 10);
+    assert_eq!(lines[1].points, 14, "Expected {} to be {}", points, 14);
+
+  }
+
+  #[test]
+  fn test_check_rows() {
+    let board = board_mock_to_vec(vec![
+      vec!["1", "1", "1", "1", "1", "1"],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+    ]);
+    let lines = check_rows(&board);
+    let points = lines[0].points;
+    console!(log, "");
+    assert_eq!(points, 14, "Expected {} to be {}", points, 14);
+
+    let board = board_mock_to_vec(vec![
+      vec!["", "1", "1", "1", "1", "1"],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+    ]);
+    let lines = check_rows(&board);
+    let points = lines[0].points;
+    console!(log, "");
+    assert_eq!(points, 10, "Expected {} to be {}", points, 10);
+
+    let board = board_mock_to_vec(vec![
+      vec!["", "", "", "", "", ""],
+      vec!["", "2", "2", "2", "2", "2"],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["1", "1", "1", "1", "1", "1"],
+      vec!["", "", "", "", "", ""],
+    ]);
+    let lines = check_rows(&board);
+    console!(log, "");
+    assert_eq!(lines[0].points, 10, "Expected {} to be {}", points, 10);
+    assert_eq!(lines[1].points, 14, "Expected {} to be {}", points, 14);
+
+    let board = board_mock_to_vec(vec![
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "2", "2"],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+      vec!["", "", "", "", "", ""],
+    ]);
+    let lines = check_rows(&board);
+    console!(log, "");
+    assert_eq!(lines.len(), 0);
+
+  }
+
+}
+
 fn check_column(board: &[Vec<Option<Ball>>], column_index: usize) -> Vec<Line> {
   let mut check_lines = CheckLines {
     lines: vec![],
     balls: vec![],
   };
-  for row in board.iter() {
-    check_lines = check_cell(check_lines, &row[column_index]);
+  for (row_index, row) in board.iter().enumerate() {
+    check_lines = check_cell(
+      check_lines,
+      &row[column_index],
+      row_index == board.len() - 1,
+    );
     // if column_index == 8 {
     //   console!(log, "8");
     //   console!(log, check_lines.clone());
@@ -130,8 +267,12 @@ fn check_row(board: &[Vec<Option<Ball>>], row_index: usize) -> Vec<Line> {
     lines: vec![],
     balls: vec![],
   };
-  for column in board[row_index].iter() {
-    check_lines = check_cell(check_lines, column);
+  for (column_index, column) in board[row_index].iter().enumerate() {
+    check_lines = check_cell(
+      check_lines,
+      column,
+      column_index == board[row_index].len() - 1,
+    );
     // if row_index == 0 {
     //   console!(log, check_lines.clone());
     // }
@@ -147,8 +288,7 @@ struct CheckLines {
 
 js_serializable!(CheckLines);
 
-// TODO: Last cell
-fn check_cell(check_lines: CheckLines, cell: &Option<Ball>) -> CheckLines {
+fn check_cell(check_lines: CheckLines, cell: &Option<Ball>, last_one: bool) -> CheckLines {
   let CheckLines {
     mut balls,
     mut lines,
@@ -161,7 +301,7 @@ fn check_cell(check_lines: CheckLines, cell: &Option<Ball>) -> CheckLines {
       } else {
         if balls[0].num == ball.num {
           balls.push(ball.clone());
-          if balls.len() >= 5 {
+          if last_one && balls.len() >= 5 {
             lines.push(create_line(balls.clone()));
             balls = vec![];
           }

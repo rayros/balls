@@ -1,3 +1,4 @@
+use crate::game::state::Board;
 use crate::game::find_lines::find_lines;
 use crate::game::action::Action;
 use crate::game::state::Ball;
@@ -96,6 +97,22 @@ pub fn reducer(state: &State, action: &Action) -> State {
       state
     }
     Action::CheckLines {} => check_lines(state),
+    Action::NewGame => new_game(state)
+  }
+}
+
+fn new_game(state: &State) -> State {
+  let board: Board = Default::default();
+  let selected_ball: Option<SelectedBall> = None;
+  let balls: Vec<Ball> = vec![];
+  State {
+    game: Game {
+      board,
+      selected_ball,
+      balls,
+      ..state.game.clone()
+    },
+    ..state.clone()
   }
 }
 

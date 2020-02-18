@@ -73,6 +73,9 @@ impl _Story {
             }
           }
           View::Game => {
+            if state.game.new_game_button.intersect(x, y) {
+              self.story(Action::NewGame);
+            }
             let maybe_click_ball = maybe_ball_intersect(&state.game.balls, x, y);
             match maybe_click_ball {
               Some(ball) => {
@@ -157,6 +160,10 @@ impl _Story {
       },
       Action::CheckLines => {
         self.story(Action::Draw);
+      },
+      Action::NewGame => {
+        self.story(Action::Draw);
+        self.story(Action::AddBalls);
       }
     }
   }

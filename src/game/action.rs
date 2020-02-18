@@ -17,7 +17,8 @@ pub enum Action {
   SelectBall { maybe_ball: Option<Ball> },
   ChangeSelectedBallColor { ball: Ball },
   MoveBall { path: Path },
-  CheckLines
+  CheckLines,
+  NewGame
 }
 
 impl PartialEq for Action  {

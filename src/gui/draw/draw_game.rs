@@ -3,13 +3,6 @@ use super::fill_rect::fill_rect;
 use stdweb::web::{CanvasRenderingContext2d, FillRule};
 use std::f64::consts::PI;
 
-trait DrawGameCtx {
-  fn draw_background(&self, width: i32, height: i32);
-  fn draw_board(&self, game: Game);
-  fn draw_ball(&self, ball: Ball);
-  fn draw_selected_ball(&self, selected_ball: SelectedBall);
-}
-
 fn color_map(num: u8, selected: Option<bool>) -> &'static str {
   let selected = selected.unwrap_or(false);
   let color = match num {
@@ -25,6 +18,14 @@ fn color_map(num: u8, selected: Option<bool>) -> &'static str {
     _ => ("black", "black")
   };
   if selected { color.1 } else { color.0 }
+}
+
+trait DrawGameCtx {
+  fn draw_background(&self, width: i32, height: i32);
+  fn draw_board(&self, state: &State);
+  fn draw_ball(&self, ball: Ball);
+  fn draw_selected_ball(&self, selected_ball: SelectedBall);
+  fn draw_points(&self, state: &State);
 }
 
 impl DrawGameCtx for CanvasRenderingContext2d {
@@ -56,15 +57,20 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     self.close_path();
   }
 
-  fn draw_board(&self, game: Game) {
-    let Game {
-      board_x,
-      board_y,
-      board_width,
-      line_width,
-      cell_width,
+  fn draw_board(&self, state: &State) {
+    let State { 
+      game: Game {
+        board_x,
+        board_y,
+        board_width,
+        line_width,
+        cell_width,
+        balls,
+        selected_ball,
+        ..
+      },
       ..
-    } = game;
+    } = state.clone();
     self.set_fill_style_color("#3c4043");
     fill_rect(self, board_x, board_y, board_width, board_width);
     self.set_fill_style_color("#afb2b7");
@@ -74,26 +80,30 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     for i in 1..9 {
       fill_rect(self, board_x, board_y - (line_width / 2) + (cell_width * i), board_width, line_width);
     }
-    for ball in game.balls.into_iter() {
+    for ball in balls.into_iter() {
       if ball.num != 0 {
         self.draw_ball(ball);
       }
     }
-    if let Some(selected_ball) = game.selected_ball {
+    if let Some(selected_ball) = selected_ball {
       self.draw_selected_ball(selected_ball);
     }
+  }
+
+  fn draw_points(&self, state: &State) {
+
   }
 }
 
 pub fn draw_game(state: State) {
   let State {
+    canvas,
     canvas_height,
     canvas_width,
-    game,
     ..
-  } = state;
-  let canvas = state.canvas.unwrap();
+  } = state.clone();
+  let canvas = canvas.unwrap();
   let ctx = canvas.ctx;
   ctx.draw_background(canvas_width, canvas_height);
-  ctx.draw_board(game);
+  ctx.draw_board(&state);
 }

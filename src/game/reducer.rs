@@ -101,7 +101,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
 
 fn check_lines(state: &State) -> State {
   let mut board = state.game.board.clone();
-  let mut points = 0;
+  let mut points = state.game.points;
   let lines = find_lines(&state.game.board);
   for line in lines.clone() {
     points += line.points;
@@ -109,13 +109,13 @@ fn check_lines(state: &State) -> State {
       board[ball.place.row_index][ball.place.column_index] = None;
     }
   }
-  // console!(log, lines.clone());
+  // console!(log, points.clone());
   let balls = get_balls(&board);
-  // console!(log, balls.clone());
   State {
     game: Game {
       board,
       balls,
+      points,
       ..state.game.clone()
     },
     ..state.clone()

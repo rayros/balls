@@ -68,7 +68,8 @@ pub struct Game {
   pub board: Board,
   pub balls: Vec<Ball>,
   pub is_game_over: bool,
-  pub selected_ball: Option<SelectedBall>
+  pub selected_ball: Option<SelectedBall>,
+  pub points: u32
 }
 
 js_serializable!( Game );

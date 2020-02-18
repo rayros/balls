@@ -67,11 +67,6 @@ impl _Story {
         let state: State = store.borrow().state.clone();
         match state.view {
           View::None => {}
-          View::Menu => {
-            if state.menu.start_button.intersect(x, y) {
-              self.story(Action::ChangeView { view: View::Game });
-            }
-          }
           View::Game => {
             if state.game.new_game_button.intersect(x, y) {
               self.story(Action::NewGame);

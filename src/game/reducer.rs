@@ -4,7 +4,6 @@ use crate::game::action::Action;
 use crate::game::state::Ball;
 use crate::game::state::Button;
 use crate::game::state::Game;
-use crate::game::state::Menu;
 use crate::game::state::Place;
 use crate::game::state::SelectedBall;
 use crate::game::state::State;
@@ -30,10 +29,6 @@ pub fn reducer(state: &State, action: &Action) -> State {
           game: resize_game(state.clone()),
           ..state
         },
-        View::Menu => State {
-          menu: resize_menu(state.clone()),
-          ..state
-        },
         View::None => state,
       }
     }
@@ -54,12 +49,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
         game: resize_game(state.clone()),
         ..state.clone()
       },
-      View::Menu => State {
-        view: view.clone(),
-        menu: resize_menu(state.clone()),
-        ..state.clone()
-      },
-      _ => state.clone(),
+      View::None => state.clone()
     },
     Action::SelectBall { maybe_ball } => select_ball(state.clone(), maybe_ball.clone()),
     Action::ChangeSelectedBallColor { ball } => match state.game.selected_ball.clone() {
@@ -197,19 +187,6 @@ fn select_ball(state: State, maybe_ball: Option<Ball>) -> State {
     None => match selected_ball {
       Some(selected_ball) => add_selected_ball_to_board(&state, selected_ball),
       None => state.clone(),
-    },
-  }
-}
-
-fn resize_menu(state: State) -> Menu {
-  let width = state.canvas_width - 50;
-  Menu {
-    start_button: Button {
-      text: String::from("START"),
-      x: 25,
-      y: 25,
-      width,
-      height: 50,
     },
   }
 }

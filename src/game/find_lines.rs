@@ -90,9 +90,9 @@ fn check_diagonal_left(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
   check_columns(&diagonal)
 }
 
-fn check_columns(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
+fn check_columns(board: &[Vec<Option<Ball>>]) -> Vec<Line> {
   let mut lines: Vec<Line> = vec![];
-  if board.len() > 0 {
+  if !board.is_empty() {
     for column_index in 0..board[0].len() {
       let column_lines = check_column(&board, column_index);
       lines.extend(column_lines.iter().cloned());
@@ -101,7 +101,7 @@ fn check_columns(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
   lines
 }
 
-fn check_column(board: &Vec<Vec<Option<Ball>>>, column_index: usize) -> Vec<Line> {
+fn check_column(board: &[Vec<Option<Ball>>], column_index: usize) -> Vec<Line> {
   let mut check_lines = CheckLines {
     lines: vec![],
     balls: vec![],
@@ -116,7 +116,7 @@ fn check_column(board: &Vec<Vec<Option<Ball>>>, column_index: usize) -> Vec<Line
   check_lines.lines
 }
 
-fn check_rows(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
+fn check_rows(board: &[Vec<Option<Ball>>]) -> Vec<Line> {
   let mut lines: Vec<Line> = vec![];
   for row_index in 0..board.len() {
     let row_lines = check_row(&board, row_index);
@@ -125,7 +125,7 @@ fn check_rows(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
   lines
 }
 
-fn check_row(board: &Vec<Vec<Option<Ball>>>, row_index: usize) -> Vec<Line> {
+fn check_row(board: &[Vec<Option<Ball>>], row_index: usize) -> Vec<Line> {
   let mut check_lines = CheckLines {
     lines: vec![],
     balls: vec![],

@@ -188,6 +188,7 @@ fn resize_menu(state: State) -> Menu {
   let width = state.canvas_width - 50;
   Menu {
     start_button: Button {
+      text: String::from("START"),
       x: 25,
       y: 25,
       width,
@@ -246,6 +247,7 @@ fn resize_game(state: State) -> Game {
     canvas_height,
     canvas_width,
     game,
+    canvas,
     ..
   } = state;
   let navigation_height = 80;
@@ -259,6 +261,17 @@ fn resize_game(state: State) -> Game {
   let board_y = navigation_height + (canvas_height - navigation_height - board_width) / 2;
   let line_width = board_width / 100;
   let cell_width = board_width / 9;
+  let ctx = canvas.unwrap().ctx;
+  let new_game_text = "  - NEW GAME -   ";
+  ctx.set_font("20px Roboto");
+  let width = ctx.measure_text(new_game_text).unwrap().get_width() as i32;
+  let new_game_button = Button {
+    text: String::from(new_game_text),
+    x: board_x + board_width - width - 20,
+    y: board_y - navigation_height + 20,
+    width,
+    height: navigation_height - 40
+  };
   let game = Game {
     board_width,
     line_width,
@@ -266,6 +279,7 @@ fn resize_game(state: State) -> Game {
     board_x,
     board_y,
     navigation_height,
+    new_game_button,
     ..game
   };
   let game = update_balls(game);

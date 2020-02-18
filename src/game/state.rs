@@ -7,8 +7,9 @@ pub struct Menu {
   pub start_button: Button,
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Serialize, Clone)]
 pub struct Button {
+  pub text: String,
   pub x: i32,
   pub y: i32,
   pub width: i32,
@@ -70,7 +71,8 @@ pub struct Game {
   pub is_game_over: bool,
   pub selected_ball: Option<SelectedBall>,
   pub points: u32,
-  pub navigation_height: i32
+  pub navigation_height: i32,
+  pub new_game_button: Button
 }
 
 js_serializable!( Game );

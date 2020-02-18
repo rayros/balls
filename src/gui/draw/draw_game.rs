@@ -119,18 +119,19 @@ impl DrawGameCtx for CanvasRenderingContext2d {
   
   fn draw_new_game_button(&self, state: &State) {
     self.set_font("20px Roboto");
-    let new_game_text = "  - NEW GAME -   ";
-    let width = self.measure_text(&new_game_text).unwrap().get_width() as i32;
     self.set_fill_style_color(color_map(3, None));
+    let button = state.game.new_game_button.clone();
     fill_rect(&self,
-      state.game.board_x + state.game.board_width - width - 20,
-      state.game.board_y - state.game.navigation_height + 20,
-      width, state.game.navigation_height - 40);
+      button.x,
+      button.y,
+      button.width,
+      button.height
+    );
     self.set_fill_style_color("#e1e1e1");
-    let font_y = f64::from(state.game.board_y - state.game.navigation_height + 47);
+    let font_y = f64::from(button.y + 27);
     self.fill_text(
-      new_game_text,
-      f64::from(state.game.board_x + state.game.board_width - width - 20),
+      button.text.as_str(),
+      f64::from(button.x),
       font_y,
       None
     );

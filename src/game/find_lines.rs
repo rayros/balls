@@ -147,6 +147,7 @@ struct CheckLines {
 
 js_serializable!(CheckLines);
 
+// TODO: Last cell
 fn check_cell(check_lines: CheckLines, cell: &Option<Ball>) -> CheckLines {
   let CheckLines {
     mut balls,

@@ -152,8 +152,8 @@ impl _Story {
       },
       Action::MoveBall { .. } => {
         self.story(Action::Draw);
-        self.story(Action::AddBalls);
         self.story(Action::CheckLines);
+        self.story(Action::AddBalls);
       },
       Action::CheckLines => {
         self.story(Action::Draw);

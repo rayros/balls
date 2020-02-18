@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 mod fonts;
 mod draw;
 use crate::story::Story;
@@ -7,10 +9,14 @@ pub use draw::draw;
 pub use canvas::resize_canvas_to_window_size;
 
 pub fn load_fonts(story: Story) {
+  let mut descriptors = HashMap::new();
+  descriptors.insert("weight", "400");
+  descriptors.insert("style", "normal");
+  // console!(log, "load font");
   fonts::load(
-    "Amatica SC",
-    "local('Amatica SC'), url(https://fonts.gstatic.com/s/amaticasc/v1/r4IyjqPgTL10SERuDuUzpAzyDMXhdD8sAj6OAJTFsBI.woff2) format('woff2')",
-    None,
+    "Roboto",
+    "local('Roboto'), local('Roboto-Regular'), url('./assets/Roboto-Regular.ttf') format('truetype')",
+    Some(descriptors),
     story
   );
 }

@@ -26,11 +26,12 @@ trait DrawGameCtx {
   fn draw_ball(&self, ball: Ball);
   fn draw_selected_ball(&self, selected_ball: SelectedBall);
   fn draw_points(&self, state: &State);
+  fn draw_new_game_button(&self, state: &State);
 }
 
 impl DrawGameCtx for CanvasRenderingContext2d {
   fn draw_background(&self, width: i32, height: i32) {
-    self.set_fill_style_color("#606368");
+    self.set_fill_style_color("#121212");
     fill_rect(self, 0, 0, width, height);
   }
 
@@ -71,9 +72,9 @@ impl DrawGameCtx for CanvasRenderingContext2d {
       },
       ..
     } = state.clone();
-    self.set_fill_style_color("#3c4043");
+    self.set_fill_style_color("#1e1e1e");
     fill_rect(self, board_x, board_y, board_width, board_width);
-    self.set_fill_style_color("#afb2b7");
+    self.set_fill_style_color("#121212");
     for i in 1..9 {
       fill_rect(self, board_x - (line_width / 2) + (cell_width * i), board_y, line_width, board_width);
     }
@@ -91,7 +92,48 @@ impl DrawGameCtx for CanvasRenderingContext2d {
   }
 
   fn draw_points(&self, state: &State) {
-
+    self.set_fill_style_color("#1e1e1e");
+    fill_rect(&self,
+      state.game.board_x,
+      state.game.board_y - state.game.navigation_height + 10,
+      state.game.board_width, state.game.navigation_height - 20);
+    self.set_fill_style_color("#9d9d9d");
+    self.set_font("20px Roboto");
+    let points_text = "SCORE:";
+    let font_y = f64::from(state.game.board_y - state.game.navigation_height + 47);
+    self.fill_text(
+      points_text,
+      f64::from(state.game.board_x + 10),
+      font_y,
+      None
+    );
+    self.set_fill_style_color("#e1e1e1");
+    let text = format!("{}", state.game.points);
+    self.fill_text(
+      text.as_str(),
+      f64::from(state.game.board_x + 15) + self.measure_text(&points_text).unwrap().get_width(),
+      font_y,
+      None
+    );
+  }
+  
+  fn draw_new_game_button(&self, state: &State) {
+    self.set_font("20px Roboto");
+    let new_game_text = "  - NEW GAME -   ";
+    let width = self.measure_text(&new_game_text).unwrap().get_width() as i32;
+    self.set_fill_style_color(color_map(3, None));
+    fill_rect(&self,
+      state.game.board_x + state.game.board_width - width - 20,
+      state.game.board_y - state.game.navigation_height + 20,
+      width, state.game.navigation_height - 40);
+    self.set_fill_style_color("#e1e1e1");
+    let font_y = f64::from(state.game.board_y - state.game.navigation_height + 47);
+    self.fill_text(
+      new_game_text,
+      f64::from(state.game.board_x + state.game.board_width - width - 20),
+      font_y,
+      None
+    );
   }
 }
 
@@ -106,4 +148,6 @@ pub fn draw_game(state: State) {
   let ctx = canvas.ctx;
   ctx.draw_background(canvas_width, canvas_height);
   ctx.draw_board(&state);
+  ctx.draw_points(&state);
+  ctx.draw_new_game_button(&state);
 }

@@ -69,7 +69,8 @@ pub struct Game {
   pub balls: Vec<Ball>,
   pub is_game_over: bool,
   pub selected_ball: Option<SelectedBall>,
-  pub points: u32
+  pub points: u32,
+  pub navigation_height: i32
 }
 
 js_serializable!( Game );

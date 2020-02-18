@@ -248,7 +248,7 @@ fn resize_game(state: State) -> Game {
     game,
     ..
   } = state;
-  let navigation_height = 50;
+  let navigation_height = 80;
   let max_board_height = canvas_height - navigation_height;
   let board_width = if max_board_height < canvas_width {
     max_board_height
@@ -265,6 +265,7 @@ fn resize_game(state: State) -> Game {
     cell_width,
     board_x,
     board_y,
+    navigation_height,
     ..game
   };
   let game = update_balls(game);
@@ -308,12 +309,15 @@ fn add_ball(state: State) -> State {
         ..state
       }
     }
-    None => State {
-      game: Game {
-        is_game_over: true,
-        ..game
-      },
-      ..state
-    },
+    None => {
+      console!(log, "No place for new ball");
+      State {
+        game: Game {
+          is_game_over: true,
+          ..game
+        },
+        ..state
+      }
+    }
   }
 }

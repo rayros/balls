@@ -6,7 +6,6 @@ mod traits;
 use draw_game::draw_game;
 
 pub fn draw(state: State) {
-  // console!(log, store.view.to_string());
   let canvas = state.canvas.clone();
   match canvas {
     Some(_canvas) => {

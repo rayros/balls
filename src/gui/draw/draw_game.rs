@@ -72,7 +72,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
       },
       ..
     } = state.clone();
-    self.set_fill_style_color("#1e1e1e");
+    self.set_fill_style_color("#2c2c2c");
     fill_rect(self, board_x, board_y, board_width, board_width);
     self.set_fill_style_color("#121212");
     for i in 1..9 {

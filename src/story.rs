@@ -168,7 +168,11 @@ impl _Story {
           }
           None => {
             self.story(Action::Draw);
-            self.story(Action::AddBalls);
+            self.story(Action::CheckLines);
+            let can_add_balls = store.borrow().state.game.can_add_balls;
+            if can_add_balls {
+              self.story(Action::AddBalls);
+            }
             self.story(Action::CheckLines);
           }
         }

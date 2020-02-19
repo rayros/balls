@@ -182,12 +182,14 @@ fn check_lines(state: &State) -> State {
     }
   }
   // console!(log, points.clone());
+  let can_add_balls = lines.len() == 0;
   let balls = get_balls(&board);
   State {
     game: Game {
       board,
       balls,
       points,
+      can_add_balls,
       ..state.game.clone()
     },
     ..state.clone()

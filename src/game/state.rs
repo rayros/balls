@@ -86,6 +86,7 @@ pub struct Game {
   pub is_game_over: bool,
   pub selected_ball: Option<SelectedBall>,
   pub points: u32,
+  pub can_add_balls: bool,
   pub navigation_height: i32,
   pub new_game_button: Button,
   pub privacy_policy_link_button: Option<LinkButton>,

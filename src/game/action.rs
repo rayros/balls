@@ -20,9 +20,3 @@ pub enum Action {
   CheckLines,
   NewGame
 }
-
-impl PartialEq for Action  {
-  fn eq(&self, other: &Self) -> bool {
-      self == other
-  }
-}

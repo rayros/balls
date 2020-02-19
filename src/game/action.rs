@@ -1,3 +1,4 @@
+use crate::game::state::Config;
 use crate::game::find_path::Path;
 use crate::game::state::Ball;
 use crate::game::view::View;
@@ -6,6 +7,7 @@ use crate::canvas::Canvas;
 #[derive(Clone)]
 pub enum Action {
   None,
+  ConfigLoaded { config: Config },
   FontLoaded,
   NewCanvas { canvas: Canvas, width: i32, height: i32 },
   Draw,

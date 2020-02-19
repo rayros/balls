@@ -1,5 +1,5 @@
 use crate::canvas::watch_click_event;
-use crate::game::{Action, Ball, State, View, equal_place, maybe_place_intersect, find_path};
+use crate::game::{Action, Ball, State, View, equal_place, maybe_place_intersect, find_path, load_config};
 use crate::gui;
 use crate::store::Store;
 use crate::throttle::Throttle;
@@ -37,6 +37,9 @@ impl _Story {
     let draw_throttle = Throttle::new(a, 1000 / 60);
     match action {
       Action::None => {
+        load_config(story_rc);
+      }
+      Action::ConfigLoaded { .. } => {
         gui::load_fonts(story_rc);
       }
       Action::FontLoaded => {
@@ -71,10 +74,12 @@ impl _Story {
             if state.game.new_game_button.intersect(x, y) {
               self.story(Action::NewGame);
             }
-            if state.game.privacy_policy_link_button.button.intersect(x, y) {
-              let link = &state.game.privacy_policy_link_button.link;
-              js! {
-                window.open(@{link});
+            if let Some(privacy_policy_link_button) = state.game.privacy_policy_link_button.clone() {
+              if privacy_policy_link_button.button.intersect(x, y) {
+                let link = &privacy_policy_link_button.link;
+                js! {
+                  window.open(@{link});
+                }
               }
             }
             let maybe_click_ball = maybe_ball_intersect(&state.game.balls, x, y);

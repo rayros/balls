@@ -1,11 +1,6 @@
 use crate::game::view::View;
 use crate::canvas::Canvas;
-use serde::Serialize;
-
-#[derive(Default, Clone)]
-pub struct Menu {
-  pub start_button: Button,
-}
+use serde::{Serialize, Deserialize};
 
 #[derive(Default, Serialize, Clone)]
 pub struct Button {
@@ -79,17 +74,25 @@ pub struct Game {
   pub points: u32,
   pub navigation_height: i32,
   pub new_game_button: Button,
-  pub privacy_policy_link_button: LinkButton
+  pub privacy_policy_link_button: Option<LinkButton>
 }
 
 js_serializable!( Game );
 
+#[derive(Default, Deserialize, Serialize, Clone)]
+pub struct Config {
+  pub no_privacy_policy: bool
+}
+
+js_serializable!( Config );
+js_deserializable!( Config );
+
 #[derive(Default, Clone)]
 pub struct State {
   pub view: View,
-  pub menu: Menu,
   pub game: Game,
   pub canvas: Option<Canvas>,
   pub canvas_width: i32,
   pub canvas_height: i32,
+  pub config: Config
 }

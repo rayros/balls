@@ -1,20 +1,21 @@
-use crate::game::state::LinkButton;
-use crate::game::state::Board;
-use crate::game::find_lines::find_lines;
+use crate::game::state::Config;
+use super::selectors::*;
 use crate::game::action::Action;
+use crate::game::find_lines::find_lines;
 use crate::game::state::Ball;
+use crate::game::state::Board;
 use crate::game::state::Button;
 use crate::game::state::Game;
+use crate::game::state::LinkButton;
 use crate::game::state::Place;
 use crate::game::state::SelectedBall;
 use crate::game::state::State;
 use crate::game::view::View;
 
-use super::selectors::*;
-
 pub fn reducer(state: &State, action: &Action) -> State {
   match action {
     Action::None => state.clone(),
+    Action::ConfigLoaded { config } => config_loaded(config, state),
     Action::FontLoaded => state.clone(),
     Action::Draw => state.clone(),
     Action::WindowResize => state.clone(),
@@ -50,7 +51,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
         game: resize_game(state.clone()),
         ..state.clone()
       },
-      View::None => state.clone()
+      View::None => state.clone(),
     },
     Action::SelectBall { maybe_ball } => select_ball(state.clone(), maybe_ball.clone()),
     Action::ChangeSelectedBallColor { ball } => match state.game.selected_ball.clone() {
@@ -88,7 +89,14 @@ pub fn reducer(state: &State, action: &Action) -> State {
       state
     }
     Action::CheckLines {} => check_lines(state),
-    Action::NewGame => new_game(state)
+    Action::NewGame => new_game(state),
+  }
+}
+
+fn config_loaded(config: &Config, state: &State) -> State {
+  State {
+    config: config.clone(),
+    ..state.clone()
   }
 }
 
@@ -254,7 +262,8 @@ fn resize_game(state: State) -> Game {
     canvas_width
   };
   let board_x = (canvas_width - board_width) / 2;
-  let board_y = navigation_height + (canvas_height - navigation_height - privacy_policy_height - board_width) / 2;
+  let board_y = navigation_height
+    + (canvas_height - navigation_height - privacy_policy_height - board_width) / 2;
   let line_width = board_width / 100;
   let cell_width = board_width / 9;
   let ctx = canvas.unwrap().ctx;
@@ -266,21 +275,25 @@ fn resize_game(state: State) -> Game {
     x: board_x + board_width - width - 20,
     y: board_y - navigation_height + 20,
     width,
-    height: navigation_height - 40
+    height: navigation_height - 40,
   };
-  let privacy_policy_text = "  PRIVACY POLICY   ";
-  ctx.set_font("10px Roboto");
-  let width = ctx.measure_text(privacy_policy_text).unwrap().get_width() as i32;
-  let privacy_policy_button = Button {
-    text: String::from(privacy_policy_text),
-    x: board_x + board_width / 2 - width / 2,
-    y: board_y + board_width,
-    width,
-    height: privacy_policy_height
-  };
-  let privacy_policy_link_button = LinkButton {
-    link: get_privacy_policy_link(),
-    button: privacy_policy_button
+  let privacy_policy_link_button = if state.config.no_privacy_policy {
+    None
+  } else {
+    let privacy_policy_text = "  PRIVACY POLICY   ";
+    ctx.set_font("10px Roboto");
+    let width = ctx.measure_text(privacy_policy_text).unwrap().get_width() as i32;
+    let privacy_policy_button = Button {
+      text: String::from(privacy_policy_text),
+      x: board_x + board_width / 2 - width / 2,
+      y: board_y + board_width,
+      width,
+      height: privacy_policy_height,
+    };
+    Some(LinkButton {
+      link: get_privacy_policy_link(),
+      button: privacy_policy_button,
+    })
   };
   let game = Game {
     board_width,

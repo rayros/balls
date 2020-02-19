@@ -148,7 +148,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     //   button.width,
     //   button.height
     // );
-    let link_button = state.game.privacy_policy_link_button.clone();
+    let link_button = state.game.privacy_policy_link_button.clone().unwrap();
     self.set_fill_style_color("#e1e1e1");
     let font_y = f64::from(link_button.button.y + link_button.button.height / 2 + 5);
     self.fill_text(
@@ -173,5 +173,7 @@ pub fn draw_game(state: State) {
   ctx.draw_board(&state);
   ctx.draw_points(&state);
   ctx.draw_new_game_button(&state);
-  ctx.draw_privacy_policy_button(&state);
+  if let Some(_) = state.game.privacy_policy_link_button {
+    ctx.draw_privacy_policy_button(&state);
+  }
 }

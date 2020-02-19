@@ -1,11 +1,12 @@
-mod canvas;
 use crate::game::Action;
 use crate::story::{Story};
-pub use canvas::Canvas;
 use stdweb::web::html_element::CanvasElement;
 use stdweb::web::{window};
-use stdweb::web::{event::ClickEvent, IEventTarget};
+use stdweb::web::{event::ClickEvent};
 use stdweb::traits::IMouseEvent;
+use stdweb::web::{document, CanvasRenderingContext2d};
+use stdweb::traits::*;
+use stdweb::unstable::TryInto;
 
 pub fn resize_canvas_to_window_size(canvas: &CanvasElement) -> (i32, i32) {
   let width = window().inner_width();
@@ -26,3 +27,28 @@ pub fn watch_click_event(story: Story, canvas: Canvas) {
 }
 
 
+#[derive(Clone)]
+pub struct Canvas {
+  selector: String,
+  pub element: CanvasElement,
+  pub ctx: CanvasRenderingContext2d,
+}
+
+impl Canvas {
+  pub fn new(canvas_attr_id: &str) -> Canvas {
+    let element: CanvasElement = document()
+      .query_selector(canvas_attr_id)
+      .unwrap()
+      .unwrap()
+      .try_into()
+      .unwrap();
+
+    let ctx: CanvasRenderingContext2d = element.get_context().unwrap();
+
+    Canvas {
+      selector: String::from(canvas_attr_id),
+      element,
+      ctx
+    }
+  }
+}

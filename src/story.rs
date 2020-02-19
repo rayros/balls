@@ -7,9 +7,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use stdweb::web::set_timeout;
 
-fn maybe_ball_intersect(balls: &Vec<Ball>, x: i32, y: i32) -> Option<&Ball> {
-  let maybe_ball = balls.into_iter().find(|ball| ball.intersect(x, y));
-  maybe_ball
+fn maybe_ball_intersect(balls: &[Ball], x: i32, y: i32) -> Option<&Ball> {
+  balls.iter().find(|ball| ball.intersect(x, y))
 }
 
 pub struct _Story {
@@ -94,17 +93,13 @@ impl _Story {
                 match maybe_place_on_board {
                   Some(place) => {
                     let path = find_path(&state.game.board, selected_ball.ball.place, place);
-                    match path {
-                      Some(path) => {
-                        if path.len() < 2 {
-                          self.story(Action::SelectBall { maybe_ball: None });
-                        } else {
-                          self.story(Action::MoveBall { path });
-                        }
-                      },
-                      None => {}
+                    if let Some(path) = path {
+                      if path.len() < 2 {
+                        self.story(Action::SelectBall { maybe_ball: None });
+                      } else {
+                        self.story(Action::MoveBall { path });
+                      }
                     }
-                    
                   },
                   None => {
                     self.story(Action::SelectBall { maybe_ball: None });

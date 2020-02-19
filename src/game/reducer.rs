@@ -1,6 +1,5 @@
 use crate::game::state::Animation;
 use crate::game::state::Step;
-use crate::game::find_path::Path;
 use crate::game::state::Config;
 use super::selectors::*;
 use crate::game::action::Action;
@@ -48,7 +47,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
     Action::SelectBall { maybe_ball } => select_ball(state.clone(), maybe_ball.clone()),
     Action::ChangeSelectedBallColor { ball } => match state.game.selected_ball.clone() {
       Some(selected_ball) => {
-        if equal_place(selected_ball.clone().ball.place, ball.clone().place) == false {
+        if !equal_place(selected_ball.clone().ball.place, ball.clone().place) {
           return state.clone();
         }
         let selected_ball = SelectedBall {
@@ -72,23 +71,7 @@ pub fn reducer(state: &State, action: &Action) -> State {
   }
 }
 
-fn move_ball(path: &Path, state: &State) -> State {
-  let place = path.last().unwrap();
-  let game = state.game.clone();
-  let selected_ball = state.game.selected_ball.clone().unwrap();
-  let selected_ball = SelectedBall {
-    ball: Ball {
-      place: place.clone(),
-      position: get_position_for_ball(&game, &place),
-      ..selected_ball.ball
-    },
-    is_selected_color: true,
-  };
-  let state = add_selected_ball_to_board(&state, selected_ball);
-  state
-}
-
-fn animation_start(path: &Path, state: &State) -> State {
+fn animation_start(path: &[Place], state: &State) -> State {
   let selected_ball = state.game.selected_ball.clone().unwrap();
   let mut animation_steps: Vec<Step> = vec![];
   for path_place in path {
@@ -182,7 +165,7 @@ fn check_lines(state: &State) -> State {
     }
   }
   // console!(log, points.clone());
-  let can_add_balls = lines.len() == 0;
+  let can_add_balls = lines.is_empty();
   let balls = get_balls(&board);
   State {
     game: Game {
@@ -264,24 +247,21 @@ fn get_radius(cell_width: i32) -> i32 {
 
 fn update_balls(game: Game) -> Game {
   let mut board = game.board.clone();
-  for row_index in 0..board.len() {
-    for column_index in 0..board[row_index].len() {
+  for (row_index, row) in board.clone().iter().enumerate() {
+    for column_index in 0..row.len() {
       let maybe_ball = board[row_index][column_index].clone();
-      match maybe_ball {
-        Some(ball) => {
-          board[row_index][column_index] = Some(Ball {
-            radius: get_radius(game.cell_width),
-            position: get_position_for_ball(
-              &game,
-              &Place {
-                row_index,
-                column_index,
-              },
-            ),
-            ..ball
-          });
-        }
-        None => {}
+      if let Some(ball) = maybe_ball {
+        board[row_index][column_index] = Some(Ball {
+          radius: get_radius(game.cell_width),
+          position: get_position_for_ball(
+            &game,
+            &Place {
+              row_index,
+              column_index,
+            },
+          ),
+          ..ball
+        });
       }
     }
   }

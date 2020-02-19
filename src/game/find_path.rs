@@ -30,7 +30,7 @@ struct PathPlace {
   step: usize
 }
 
-fn fill_map_of_paths<T>(map: &Vec<Vec<Option<T>>>) -> Vec<Vec<Option<PathPlace>>>{
+fn fill_map_of_paths<T>(map: &[Vec<Option<T>>]) -> Vec<Vec<Option<PathPlace>>>{
   let mut map_of_paths: Vec<Vec<Option<PathPlace>>> = vec![];
   for row_item in map.iter() {
     let mut row_item_vec = vec![];
@@ -51,8 +51,8 @@ fn find_path_2d<T>(map: Vec<Vec<Option<T>>>, start_place: Place, stop_place: Pla
   };
   let Place { row_index, column_index } = start_place;
   let mut path_places_to_search: Vec<PathPlace> = vec![path_place.clone()];
-  map_of_paths[row_index][column_index] = Some(path_place.clone());
-  while path_places_to_search.len() > 0 {
+  map_of_paths[row_index][column_index] = Some(path_place);
+  while !path_places_to_search.is_empty() {
     let PathPlace { place, step, .. } = path_places_to_search.remove(0);
     if equal_place(place.clone(), stop_place.clone()) {
       return Some(get_path(stop_place, &map_of_paths));
@@ -88,7 +88,7 @@ fn find_path_2d<T>(map: Vec<Vec<Option<T>>>, start_place: Place, stop_place: Pla
   None
 }
 
-fn get_path(place: Place, map_of_paths: &Vec<Vec<Option<PathPlace>>>) -> Path {
+fn get_path(place: Place, map_of_paths: &[Vec<Option<PathPlace>>]) -> Path {
   let mut path = vec![];
   let mut maybe_path_place = map_of_paths[place.row_index][place.column_index].clone();
   while let Some(path_place) = maybe_path_place {
@@ -106,11 +106,11 @@ fn get_path(place: Place, map_of_paths: &Vec<Vec<Option<PathPlace>>>) -> Path {
   path
 }
 
-fn is_unchecked_place<T>(map: &Vec<Vec<Option<T>>>, map_of_paths: &Vec<Vec<Option<PathPlace>>>, place: Place) -> bool {
-  if let Some(_) = &map[place.row_index][place.column_index] {
+fn is_unchecked_place<T>(map: &[Vec<Option<T>>], map_of_paths: &[Vec<Option<PathPlace>>], place: Place) -> bool {
+  if map[place.row_index][place.column_index].is_some() {
     return false;
   }
-  if let Some(_) = &map_of_paths[place.row_index][place.column_index] {
+  if map_of_paths[place.row_index][place.column_index].is_some() {
     return false;
   }
   true

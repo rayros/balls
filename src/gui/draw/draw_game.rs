@@ -51,7 +51,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     self.set_line_width(stroke_width as f64);
     self.begin_path();
     self.arc(f64::from(selected_ball.ball.position.0), f64::from(selected_ball.ball.position.1), f64::from(selected_ball.ball.radius - stroke_width / 2), 0.0, 2.0 * PI, false);
-    if selected_ball.is_selected_color == true {
+    if selected_ball.is_selected_color {
       self.set_fill_style_color(color_map(selected_ball.ball.num, Some(true)));
     } else {
       self.set_fill_style_color(color_map(selected_ball.ball.num, None));
@@ -162,12 +162,9 @@ impl DrawGameCtx for CanvasRenderingContext2d {
   }
 
   fn draw_animation(&self, state: &State) {
-    match state.game.animation.clone() {
-      Some(animation) => {
-        let ball = animation.steps[animation.current_step].ball.clone();
-        self.draw_ball(ball);
-      },
-      None => {}
+    if let Some(animation) = state.game.animation.clone() {
+      let ball = animation.steps[animation.current_step].ball.clone();
+      self.draw_ball(ball);
     }
   }
 }
@@ -185,7 +182,7 @@ pub fn draw_game(state: State) {
   ctx.draw_board(&state);
   ctx.draw_points(&state);
   ctx.draw_new_game_button(&state);
-  if let Some(_) = state.game.privacy_policy_link_button {
+  if state.game.privacy_policy_link_button.is_some() {
     ctx.draw_privacy_policy_button(&state);
   }
 }

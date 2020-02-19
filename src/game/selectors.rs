@@ -18,7 +18,7 @@ fn board_to_empty_places(board: &Board) -> Vec<Place> {
   let mut vec: Vec<Place> = vec![];
   for (row_index, row) in board.iter().enumerate() {
     for (column_index, column) in row.iter().enumerate() {
-      if let None = column {
+      if column.is_none() {
         vec.push(Place { row_index, column_index });
       }
     }

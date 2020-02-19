@@ -7,11 +7,8 @@ use draw_game::draw_game;
 
 pub fn draw(state: State) {
   let canvas = state.canvas.clone();
-  match canvas {
-    Some(_canvas) => {
-      draw_game(state);
-    },
-    None => {}
+  if canvas.is_some() {
+    draw_game(state);
   }
 }
 

@@ -40,7 +40,7 @@ fn create_line(balls: Vec<Ball>) -> Line {
     console!(log, "Wrong", balls_count);
   }
   Line {
-    balls: balls,
+    balls,
     points: get_points(balls_count),
   }
 }
@@ -53,7 +53,7 @@ fn create_line(balls: Vec<Ball>) -> Line {
 // # E F G H #
 // # # I J K L
 
-fn check_diagonal_right(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
+fn check_diagonal_right(board: &[Vec<Option<Ball>>]) -> Vec<Line> {
   let mut diagonal: Vec<Vec<Option<Ball>>> = vec![];
   for row_index in 0..board.len() {
     let mut column: Vec<Option<Ball>> = vec![];
@@ -77,7 +77,7 @@ fn check_diagonal_right(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
 // # E F G H #
 // I J K L # #
 
-fn check_diagonal_left(board: &Vec<Vec<Option<Ball>>>) -> Vec<Line> {
+fn check_diagonal_left(board: &[Vec<Option<Ball>>]) -> Vec<Line> {
   let mut diagonal: Vec<Vec<Option<Ball>>> = vec![];
   for row_index in 0..board.len() {
     let mut column: Vec<Option<Ball>> = vec![];
@@ -106,8 +106,8 @@ fn check_columns(board: &[Vec<Option<Ball>>]) -> Vec<Line> {
 
 #[cfg(test)]
 mod tests {
-  use crate::game::state::Place;
   use super::*;
+  use crate::game::state::Place;
   use std::panic;
 
   fn board_mock_to_vec(board: Vec<Vec<&str>>) -> Vec<Vec<Option<Ball>>> {
@@ -174,7 +174,6 @@ mod tests {
     console!(log, "");
     assert_eq!(lines[0].points, 10, "Expected {} to be {}", points, 10);
     assert_eq!(lines[1].points, 14, "Expected {} to be {}", points, 14);
-
   }
 
   #[test]
@@ -229,9 +228,7 @@ mod tests {
     let lines = check_rows(&board);
     console!(log, "");
     assert_eq!(lines.len(), 0);
-
   }
-
 }
 
 fn check_column(board: &[Vec<Option<Ball>>], column_index: usize) -> Vec<Line> {
@@ -298,19 +295,17 @@ fn check_cell(check_lines: CheckLines, cell: &Option<Ball>, last_one: bool) -> C
       let balls_count = balls.len();
       if balls_count == 0 {
         balls = vec![ball.clone()];
-      } else {
-        if balls[0].num == ball.num {
-          balls.push(ball.clone());
-          if last_one && balls.len() >= 5 {
-            lines.push(create_line(balls.clone()));
-            balls = vec![];
-          }
-        } else {
-          if balls_count >= 5 {
-            lines.push(create_line(balls.clone()));
-          }
-          balls = vec![ball.clone()];
+      } else if balls[0].num == ball.num {
+        balls.push(ball.clone());
+        if last_one && balls.len() >= 5 {
+          lines.push(create_line(balls.clone()));
+          balls = vec![];
         }
+      } else {
+        if balls_count >= 5 {
+          lines.push(create_line(balls.clone()));
+        }
+        balls = vec![ball.clone()];
       }
     }
     None => {

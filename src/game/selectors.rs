@@ -6,6 +6,10 @@ use crate::game::state::Game;
 use crate::game::state::Place;
 use rand::prelude::*;
 
+pub fn get_privacy_policy_link() -> String {
+  String::from("https://studiolacosanostra.github.io/projects/lines/privacy_policy.html")
+}
+
 pub fn equal_place(place_a: Place, place_b: Place) -> bool {
   place_a.row_index == place_b.row_index && place_a.column_index == place_b.column_index
 }

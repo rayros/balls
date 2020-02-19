@@ -71,6 +71,12 @@ impl _Story {
             if state.game.new_game_button.intersect(x, y) {
               self.story(Action::NewGame);
             }
+            if state.game.privacy_policy_link_button.button.intersect(x, y) {
+              let link = &state.game.privacy_policy_link_button.link;
+              js! {
+                window.open(@{link});
+              }
+            }
             let maybe_click_ball = maybe_ball_intersect(&state.game.balls, x, y);
             match maybe_click_ball {
               Some(ball) => {

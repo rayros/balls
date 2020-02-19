@@ -1,5 +1,5 @@
 [package]
-name = "balls"
+name = "lines"
 version = "0.1.0"
 authors = ["rayros <zniwus@gmail.com>"]
 edition = "2018"

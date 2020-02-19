@@ -27,6 +27,7 @@ trait DrawGameCtx {
   fn draw_selected_ball(&self, selected_ball: SelectedBall);
   fn draw_points(&self, state: &State);
   fn draw_new_game_button(&self, state: &State);
+  fn draw_privacy_policy_button(&self, state: &State);
 }
 
 impl DrawGameCtx for CanvasRenderingContext2d {
@@ -128,10 +129,31 @@ impl DrawGameCtx for CanvasRenderingContext2d {
       button.height
     );
     self.set_fill_style_color("#e1e1e1");
-    let font_y = f64::from(button.y + 27);
+    let font_y = f64::from(button.y + button.height / 2 + 7);
     self.fill_text(
       button.text.as_str(),
       f64::from(button.x),
+      font_y,
+      None
+    );
+  }
+
+  fn draw_privacy_policy_button(&self, state: &State) {
+    self.set_font("10px Roboto");
+    // self.set_fill_style_color(color_map(3, None));
+    // let button = state.game.privacy_policy_link_button.button.clone();
+    // fill_rect(&self,
+    //   button.x,
+    //   button.y,
+    //   button.width,
+    //   button.height
+    // );
+    let link_button = state.game.privacy_policy_link_button.clone();
+    self.set_fill_style_color("#e1e1e1");
+    let font_y = f64::from(link_button.button.y + link_button.button.height / 2 + 5);
+    self.fill_text(
+      link_button.button.text.as_str(),
+      f64::from(link_button.button.x),
       font_y,
       None
     );
@@ -151,4 +173,5 @@ pub fn draw_game(state: State) {
   ctx.draw_board(&state);
   ctx.draw_points(&state);
   ctx.draw_new_game_button(&state);
+  ctx.draw_privacy_policy_button(&state);
 }

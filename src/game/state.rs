@@ -23,6 +23,12 @@ impl Button {
 }
 
 #[derive(Default, Serialize, Clone)]
+pub struct LinkButton {
+  pub button: Button,
+  pub link: String
+}
+
+#[derive(Default, Serialize, Clone)]
 pub struct Place {
   pub row_index: usize,
   pub column_index: usize
@@ -72,7 +78,8 @@ pub struct Game {
   pub selected_ball: Option<SelectedBall>,
   pub points: u32,
   pub navigation_height: i32,
-  pub new_game_button: Button
+  pub new_game_button: Button,
+  pub privacy_policy_link_button: LinkButton
 }
 
 js_serializable!( Game );

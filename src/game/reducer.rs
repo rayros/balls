@@ -1,3 +1,4 @@
+use crate::game::state::LinkButton;
 use crate::game::state::Board;
 use crate::game::find_lines::find_lines;
 use crate::game::action::Action;
@@ -245,14 +246,15 @@ fn resize_game(state: State) -> Game {
     ..
   } = state;
   let navigation_height = 80;
-  let max_board_height = canvas_height - navigation_height;
+  let privacy_policy_height = 30;
+  let max_board_height = canvas_height - navigation_height - privacy_policy_height;
   let board_width = if max_board_height < canvas_width {
     max_board_height
   } else {
     canvas_width
   };
   let board_x = (canvas_width - board_width) / 2;
-  let board_y = navigation_height + (canvas_height - navigation_height - board_width) / 2;
+  let board_y = navigation_height + (canvas_height - navigation_height - privacy_policy_height - board_width) / 2;
   let line_width = board_width / 100;
   let cell_width = board_width / 9;
   let ctx = canvas.unwrap().ctx;
@@ -266,6 +268,20 @@ fn resize_game(state: State) -> Game {
     width,
     height: navigation_height - 40
   };
+  let privacy_policy_text = "  PRIVACY POLICY   ";
+  ctx.set_font("10px Roboto");
+  let width = ctx.measure_text(privacy_policy_text).unwrap().get_width() as i32;
+  let privacy_policy_button = Button {
+    text: String::from(privacy_policy_text),
+    x: board_x + board_width / 2 - width / 2,
+    y: board_y + board_width,
+    width,
+    height: privacy_policy_height
+  };
+  let privacy_policy_link_button = LinkButton {
+    link: get_privacy_policy_link(),
+    button: privacy_policy_button
+  };
   let game = Game {
     board_width,
     line_width,
@@ -274,6 +290,7 @@ fn resize_game(state: State) -> Game {
     board_y,
     navigation_height,
     new_game_button,
+    privacy_policy_link_button,
     ..game
   };
   let game = update_balls(game);

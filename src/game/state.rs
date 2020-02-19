@@ -68,8 +68,8 @@ js_serializable!( Step );
 
 #[derive(Default, Serialize, Clone)]
 pub struct Animation {
-  steps: Vec<Step>,
-  current_step: usize
+  pub steps: Vec<Step>,
+  pub current_step: usize
 }
 
 js_serializable!( Animation );
@@ -99,7 +99,6 @@ pub struct Config {
   pub no_privacy_policy: bool
 }
 
-js_serializable!( Config );
 js_deserializable!( Config );
 
 #[derive(Default, Clone)]

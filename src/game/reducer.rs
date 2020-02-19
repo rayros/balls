@@ -1,3 +1,5 @@
+use crate::game::state::Step;
+use crate::game::find_path::Path;
 use crate::game::state::Config;
 use super::selectors::*;
 use crate::game::action::Action;
@@ -62,24 +64,52 @@ pub fn reducer(state: &State, action: &Action) -> State {
       }
       None => state.clone(),
     },
-    Action::MoveBall { path } => {
-      let place = path[0].clone();
-      let game = state.game.clone();
-      let selected_ball = state.game.selected_ball.clone().unwrap();
-      let selected_ball = SelectedBall {
-        ball: Ball {
-          place: place.clone(),
-          position: get_position_for_ball(game, place.clone()),
-          ..selected_ball.ball
-        },
-        is_selected_color: true,
-      };
-      let state = add_selected_ball_to_board(&state, selected_ball);
-      state
-    }
+    Action::MoveBall { path } => move_ball(path, state),
     Action::CheckLines {} => check_lines(state),
     Action::NewGame => new_game(state),
   }
+}
+
+fn move_ball(path: &Path, state: &State) -> State {
+  let place = path.last().unwrap();
+  let game = state.game.clone();
+  let selected_ball = state.game.selected_ball.clone().unwrap();
+  let selected_ball = SelectedBall {
+    ball: Ball {
+      place: place.clone(),
+      position: get_position_for_ball(&game, &place),
+      ..selected_ball.ball
+    },
+    is_selected_color: true,
+  };
+  let state = add_selected_ball_to_board(&state, selected_ball);
+  state
+}
+
+fn animation_start(path: Path, state: &State) -> State {
+  let selected_ball = state.game.selected_ball.clone().unwrap();
+  let mut animation_steps: Vec<Step> = vec![];
+  for path_place in path {
+    animation_steps.push(Step {
+      ball: Ball {
+        place: path_place.clone(),
+        position: get_position_for_ball(&state.game, &path_place),
+        ..selected_ball.ball
+      }
+    });
+  }
+  state.clone()
+}
+
+fn animation_end(state: &State) -> State {
+  let animation = state.game.animation.clone().unwrap();
+  let last_animation_step = animation.steps.last().unwrap();
+  let ball = last_animation_step.ball.clone();
+  let selected_ball = SelectedBall {
+    ball,
+    is_selected_color: true,
+  };
+  add_selected_ball_to_board(&state, selected_ball)
 }
 
 fn config_loaded(config: &Config, state: &State) -> State {
@@ -203,8 +233,8 @@ fn update_balls(game: Game) -> Game {
           board[row_index][column_index] = Some(Ball {
             radius: get_radius(game.cell_width),
             position: get_position_for_ball(
-              game.clone(),
-              Place {
+              &game,
+              &Place {
                 row_index,
                 column_index,
               },
@@ -220,7 +250,7 @@ fn update_balls(game: Game) -> Game {
     Some(selected_ball) => Some(SelectedBall {
       ball: Ball {
         radius: get_radius(game.cell_width),
-        position: get_position_for_ball(game.clone(), selected_ball.ball.clone().place),
+        position: get_position_for_ball(&game, &selected_ball.ball.place),
         ..selected_ball.ball
       },
       ..selected_ball
@@ -319,7 +349,7 @@ fn add_ball(state: State) -> State {
         num,
         radius: get_radius(game.cell_width),
         place: place.clone(),
-        position: get_position_for_ball(game.clone(), place.clone()),
+        position: get_position_for_ball(&game, &place),
       };
       let Place {
         row_index,

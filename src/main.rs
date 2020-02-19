@@ -19,7 +19,6 @@ fn watch_resize_event(story: Story) {
   });
 }
 
-
 fn main() {
   stdweb::initialize();
   let store: Store<State, Action> = get_store(reducer);

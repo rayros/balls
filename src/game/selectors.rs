@@ -63,7 +63,7 @@ pub fn maybe_place_intersect(game: &Game, x: i32, y: i32) -> Option<Place> {
   None
 }
 
-pub fn get_position_for_ball(game: Game, place: Place) -> (i32, i32) {
+pub fn get_position_for_ball(game: &Game, place: &Place) -> (i32, i32) {
   // console!(log, row_index as u32);
   // console!(log, column_index as u32);
   let x = game.board_x

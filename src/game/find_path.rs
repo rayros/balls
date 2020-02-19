@@ -3,7 +3,6 @@ use crate::game::selectors::equal_place;
 use crate::game::state::Ball;
 use crate::game::state::Board;
 use crate::game::state::Place;
-use serde::Serialize;
 
 pub type Path = Vec<Place>;
 
@@ -24,14 +23,12 @@ pub fn find_path(board: &Board, start_place: Place, stop_place: Place) -> Option
   find_path_2d(board, start_place, stop_place)
 }
 
-#[derive(Default, Serialize, Clone)]
+#[derive(Default, Clone)]
 struct PathPlace {
   place: Place,
   place_before: Option<Place>,
   step: usize
 }
-
-js_serializable!( PathPlace );
 
 fn fill_map_of_paths<T>(map: &Vec<Vec<Option<T>>>) -> Vec<Vec<Option<PathPlace>>>{
   let mut map_of_paths: Vec<Vec<Option<PathPlace>>> = vec![];
@@ -105,6 +102,7 @@ fn get_path(place: Place, map_of_paths: &Vec<Vec<Option<PathPlace>>>) -> Path {
       }
     }
   }
+  path.reverse();
   path
 }
 

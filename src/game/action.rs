@@ -18,5 +18,6 @@ pub enum Action {
   ChangeSelectedBallColor { ball: Ball },
   MoveBall { path: Path },
   CheckLines,
-  NewGame
+  NewGame,
+  Animate
 }

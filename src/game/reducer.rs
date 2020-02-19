@@ -1,3 +1,4 @@
+use crate::game::state::Animation;
 use crate::game::state::Step;
 use crate::game::find_path::Path;
 use crate::game::state::Config;
@@ -64,9 +65,10 @@ pub fn reducer(state: &State, action: &Action) -> State {
       }
       None => state.clone(),
     },
-    Action::MoveBall { path } => move_ball(path, state),
+    Action::MoveBall { path } => animation_start(path, state),
     Action::CheckLines {} => check_lines(state),
     Action::NewGame => new_game(state),
+    Action::Animate => animation_step(state)
   }
 }
 
@@ -86,7 +88,7 @@ fn move_ball(path: &Path, state: &State) -> State {
   state
 }
 
-fn animation_start(path: Path, state: &State) -> State {
+fn animation_start(path: &Path, state: &State) -> State {
   let selected_ball = state.game.selected_ball.clone().unwrap();
   let mut animation_steps: Vec<Step> = vec![];
   for path_place in path {
@@ -98,7 +100,35 @@ fn animation_start(path: Path, state: &State) -> State {
       }
     });
   }
-  state.clone()
+  let state = state.clone();
+  State {
+    game: Game {
+      selected_ball: None,
+      animation: Some(Animation {
+        steps: animation_steps,
+        current_step: 0
+      }),
+      ..state.game
+    },
+    ..state
+  }
+}
+
+fn animation_step(state: &State) -> State {
+  let animation: Animation = state.game.animation.clone().unwrap();
+  if animation.current_step == animation.steps.len() - 1 {
+    return animation_end(state);
+  }
+  State {
+    game: Game {
+      animation: Some(Animation {
+        current_step: animation.current_step + 1,
+        ..animation
+      }),
+      ..state.game.clone()
+    },
+    ..state.clone()
+  }
 }
 
 fn animation_end(state: &State) -> State {
@@ -109,7 +139,14 @@ fn animation_end(state: &State) -> State {
     ball,
     is_selected_color: true,
   };
-  add_selected_ball_to_board(&state, selected_ball)
+  let state = add_selected_ball_to_board(&state, selected_ball);
+  State {
+    game: Game {
+      animation: None,
+      ..state.game
+    },
+    ..state
+  }
 }
 
 fn config_loaded(config: &Config, state: &State) -> State {

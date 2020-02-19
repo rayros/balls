@@ -143,16 +143,36 @@ impl _Story {
         }
       },
       Action::MoveBall { .. } => {
-        self.story(Action::Draw);
-        self.story(Action::AddBalls);
-        self.story(Action::CheckLines);
+        self.story(Action::Animate);
       },
       Action::CheckLines => {
         self.story(Action::Draw);
       },
       Action::NewGame => {
         self.story(Action::AddBalls);
-      }
+      },
+      Action::Animate => {
+        self.story(Action::Draw);
+        let animation = store.borrow().state.game.animation.clone();
+        match animation {
+          Some(_) => {
+            let story = self.story_rc.clone().unwrap();
+            set_timeout(
+              move || {
+                story
+                .borrow()
+                .story(Action::Animate);
+              },
+              300,
+            );
+          }
+          None => {
+            self.story(Action::Draw);
+            self.story(Action::AddBalls);
+            self.story(Action::CheckLines);
+          }
+        }
+      },
     }
   }
 

@@ -163,7 +163,7 @@ impl _Story {
                 .borrow()
                 .story(Action::Animate);
               },
-              300,
+              200,
             );
           }
           None => {

@@ -28,6 +28,7 @@ trait DrawGameCtx {
   fn draw_points(&self, state: &State);
   fn draw_new_game_button(&self, state: &State);
   fn draw_privacy_policy_button(&self, state: &State);
+  fn draw_animation(&self, state: &State);
 }
 
 impl DrawGameCtx for CanvasRenderingContext2d {
@@ -90,6 +91,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     if let Some(selected_ball) = selected_ball {
       self.draw_selected_ball(selected_ball);
     }
+    self.draw_animation(state);
   }
 
   fn draw_points(&self, state: &State) {
@@ -157,6 +159,16 @@ impl DrawGameCtx for CanvasRenderingContext2d {
       font_y,
       None
     );
+  }
+
+  fn draw_animation(&self, state: &State) {
+    match state.game.animation.clone() {
+      Some(animation) => {
+        let ball = animation.steps[animation.current_step].ball.clone();
+        self.draw_ball(ball);
+      },
+      None => {}
+    }
   }
 }
 

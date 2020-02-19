@@ -1,5 +1,5 @@
 use crate::canvas::watch_click_event;
-use crate::game::{Action, Ball, State, View, equal_place, maybe_place_intersect, find_path, load_config};
+use crate::game::{Action, Ball, State, equal_place, maybe_place_intersect, find_path, load_config};
 use crate::gui;
 use crate::store::Store;
 use crate::throttle::Throttle;
@@ -51,8 +51,8 @@ impl _Story {
         });
       }
       Action::NewCanvas { canvas, .. } => {
-        self.story(Action::ChangeView { view: View::Game });
         watch_click_event(story_rc, canvas);
+        self.story(Action::AddBalls);
       }
       Action::Draw => {
         draw_throttle.update();
@@ -68,72 +68,55 @@ impl _Story {
       }
       Action::Click { x, y } => {
         let state: State = store.borrow().state.clone();
-        match state.view {
-          View::None => {}
-          View::Game => {
-            if state.game.new_game_button.intersect(x, y) {
-              self.story(Action::NewGame);
+        if state.game.new_game_button.intersect(x, y) {
+          self.story(Action::NewGame);
+        }
+        if let Some(privacy_policy_link_button) = state.game.privacy_policy_link_button.clone() {
+          if privacy_policy_link_button.button.intersect(x, y) {
+            let link = &privacy_policy_link_button.link;
+            js! {
+              window.open(@{link});
             }
-            if let Some(privacy_policy_link_button) = state.game.privacy_policy_link_button.clone() {
-              if privacy_policy_link_button.button.intersect(x, y) {
-                let link = &privacy_policy_link_button.link;
-                js! {
-                  window.open(@{link});
-                }
-              }
-            }
-            let maybe_click_ball = maybe_ball_intersect(&state.game.balls, x, y);
-            match maybe_click_ball {
-              Some(ball) => {
-                self.story(Action::SelectBall {
-                  maybe_ball: Some(ball.clone()),
-                });
-              }
-              None => {
-                let maybe_selected_ball = state.game.selected_ball.clone();
-                match maybe_selected_ball {
-                  Some(selected_ball) => {
-                    let maybe_place_on_board = maybe_place_intersect(&state.game, x, y);
-                    match maybe_place_on_board {
-                      Some(place) => {
-                        let path = find_path(&state.game.board, selected_ball.ball.place, place);
-                        match path {
-                          Some(path) => {
-                            if path.len() < 2 {
-                              self.story(Action::SelectBall { maybe_ball: None });
-                            } else {
-                              self.story(Action::MoveBall { path });
-                            }
-                          },
-                          None => {}
+          }
+        }
+        let maybe_click_ball = maybe_ball_intersect(&state.game.balls, x, y);
+        match maybe_click_ball {
+          Some(ball) => {
+            self.story(Action::SelectBall {
+              maybe_ball: Some(ball.clone()),
+            });
+          }
+          None => {
+            let maybe_selected_ball = state.game.selected_ball.clone();
+            match maybe_selected_ball {
+              Some(selected_ball) => {
+                let maybe_place_on_board = maybe_place_intersect(&state.game, x, y);
+                match maybe_place_on_board {
+                  Some(place) => {
+                    let path = find_path(&state.game.board, selected_ball.ball.place, place);
+                    match path {
+                      Some(path) => {
+                        if path.len() < 2 {
+                          self.story(Action::SelectBall { maybe_ball: None });
+                        } else {
+                          self.story(Action::MoveBall { path });
                         }
-                        
                       },
-                      None => {
-                        self.story(Action::SelectBall { maybe_ball: None });
-                      }
+                      None => {}
                     }
+                    
                   },
                   None => {
                     self.story(Action::SelectBall { maybe_ball: None });
                   }
                 }
+              },
+              None => {
+                self.story(Action::SelectBall { maybe_ball: None });
               }
             }
           }
         }
-      }
-      Action::ChangeView { view } => {
-        match view {
-          View::Game => {
-            let state: State = store.borrow().state.clone();
-            if state.game.balls.is_empty() {
-              self.story(Action::AddBalls);
-            }
-          }
-          _ => {}
-        }
-        self.story(Action::Draw);
       }
       Action::AddBalls => {
         self.story(Action::Draw);
@@ -161,14 +144,13 @@ impl _Story {
       },
       Action::MoveBall { .. } => {
         self.story(Action::Draw);
-        self.story(Action::CheckLines);
         self.story(Action::AddBalls);
+        self.story(Action::CheckLines);
       },
       Action::CheckLines => {
         self.story(Action::Draw);
       },
       Action::NewGame => {
-        self.story(Action::Draw);
         self.story(Action::AddBalls);
       }
     }

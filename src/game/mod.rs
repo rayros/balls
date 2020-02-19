@@ -1,7 +1,6 @@
 mod action;
 mod reducer;
 mod state;
-mod view;
 mod selectors;
 mod find_path;
 mod find_lines;
@@ -10,7 +9,6 @@ pub use state::State;
 pub use action::Action;
 pub use state::Game;
 pub use state::Ball;
-pub use view::View;
 pub use reducer::reducer;
 pub use state::SelectedBall;
 pub use selectors::{equal_place, maybe_place_intersect};

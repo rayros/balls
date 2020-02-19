@@ -10,7 +10,6 @@ use crate::game::state::LinkButton;
 use crate::game::state::Place;
 use crate::game::state::SelectedBall;
 use crate::game::state::State;
-use crate::game::view::View;
 
 pub fn reducer(state: &State, action: &Action) -> State {
   match action {
@@ -20,39 +19,29 @@ pub fn reducer(state: &State, action: &Action) -> State {
     Action::Draw => state.clone(),
     Action::WindowResize => state.clone(),
     Action::Click { .. } => state.clone(),
-    Action::CanvasResize { width, height } => {
-      let state = State {
-        canvas_width: *width,
-        canvas_height: *height,
-        ..state.clone()
-      };
-      match state.view {
-        View::Game => State {
-          game: resize_game(state.clone()),
-          ..state
-        },
-        View::None => state,
-      }
-    }
+    Action::CanvasResize { width, height } => State {
+      canvas_width: *width,
+      canvas_height: *height,
+      game: resize_game(state.clone()),
+      ..state.clone()
+    },
     Action::NewCanvas {
       canvas,
       width,
       height,
-    } => State {
-      canvas: Some(canvas.clone()),
-      canvas_width: *width,
-      canvas_height: *height,
-      ..state.clone()
+    } => {
+      let state = State {
+        canvas: Some(canvas.clone()),
+        canvas_width: *width,
+        canvas_height: *height,
+        ..state.clone()
+      };
+      State {
+        game: resize_game(state.clone()),
+        ..state
+      }
     },
     Action::AddBalls => add_balls(state.clone(), 3),
-    Action::ChangeView { view } => match view {
-      View::Game => State {
-        view: view.clone(),
-        game: resize_game(state.clone()),
-        ..state.clone()
-      },
-      View::None => state.clone(),
-    },
     Action::SelectBall { maybe_ball } => select_ball(state.clone(), maybe_ball.clone()),
     Action::ChangeSelectedBallColor { ball } => match state.game.selected_ball.clone() {
       Some(selected_ball) => {

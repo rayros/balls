@@ -1,4 +1,4 @@
-use crate::game::{State, View};
+use crate::game::{State};
 mod fill_rect;
 mod draw_game;
 mod traits;
@@ -10,10 +10,7 @@ pub fn draw(state: State) {
   let canvas = state.canvas.clone();
   match canvas {
     Some(_canvas) => {
-      match state.view {
-        View::None => {},
-        View::Game => draw_game(state)
-      }
+      draw_game(state);
     },
     None => {}
   }

@@ -1,4 +1,3 @@
-use crate::game::view::View;
 use crate::canvas::Canvas;
 use serde::{Serialize, Deserialize};
 
@@ -61,6 +60,21 @@ pub struct SelectedBall {
 js_serializable!( SelectedBall );
 
 #[derive(Default, Serialize, Clone)]
+pub struct Step {
+  pub ball: Ball
+}
+
+js_serializable!( Step );
+
+#[derive(Default, Serialize, Clone)]
+pub struct Animation {
+  steps: Vec<Step>,
+  current_step: usize
+}
+
+js_serializable!( Animation );
+
+#[derive(Default, Serialize, Clone)]
 pub struct Game {
   pub board_x: i32,
   pub board_y: i32,
@@ -74,7 +88,8 @@ pub struct Game {
   pub points: u32,
   pub navigation_height: i32,
   pub new_game_button: Button,
-  pub privacy_policy_link_button: Option<LinkButton>
+  pub privacy_policy_link_button: Option<LinkButton>,
+  pub animation: Option<Animation>
 }
 
 js_serializable!( Game );
@@ -89,7 +104,6 @@ js_deserializable!( Config );
 
 #[derive(Default, Clone)]
 pub struct State {
-  pub view: View,
   pub game: Game,
   pub canvas: Option<Canvas>,
   pub canvas_width: i32,

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "203531946865",
+    "firebase_url": "https://lines-55e4b.firebaseio.com",
+    "project_id": "lines-55e4b",
+    "storage_bucket": "lines-55e4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203531946865:android:5566148659153e34d844d0",
+        "android_client_info": {
+          "package_name": "studiolacosanostra.game.lines"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203531946865-i4if6a901ovra6ed3moo45b7469l2fmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfb5ymlyMckpl3lQIXe4tHaZV6lV3ursM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203531946865-i4if6a901ovra6ed3moo45b7469l2fmm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

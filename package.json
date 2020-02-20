@@ -7,10 +7,11 @@
     "start": "cargo web start --auto-reload",
     "gh-pages-publish": "ts-node --project bin/tsconfig.json bin/gh-pages-publish",
     "gh-pages-clean": "gh-pages-clean",
-    "deploy": "cargo web deploy --release && npm run gh-pages-publish",
+    "release": "cargo web deploy --release",
+    "deploy": "npm run release && npm run gh-pages-publish",
     "lint": "cargo clippy",
     "test": "cargo web test",
-    "deploy-crazygames": "cargo web deploy --release && cp config.crazygames.json target/deploy/assets/config.json"
+    "deploy-crazygames": "npm run release && cp config.crazygames.json target/deploy/assets/config.json"
   },
   "author": "",
   "license": "ISC",

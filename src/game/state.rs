@@ -90,7 +90,8 @@ pub struct Game {
   pub navigation_height: i32,
   pub new_game_button: Button,
   pub privacy_policy_link_button: Option<LinkButton>,
-  pub animation: Option<Animation>
+  pub animation: Option<Animation>,
+  pub new_game_count: u32
 }
 
 js_serializable!( Game );

@@ -154,6 +154,7 @@ fn new_game(state: &State) -> State {
       selected_ball,
       balls,
       points: 0,
+      new_game_count: state.game.new_game_count + 1,
       ..state.game.clone()
     },
     ..state.clone()

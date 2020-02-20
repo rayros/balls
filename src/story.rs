@@ -147,6 +147,7 @@ impl _Story {
         self.story(Action::Draw);
       },
       Action::NewGame => {
+        // TODO: Show ads after 5 new games.
         self.story(Action::AddBalls);
       },
       Action::Animate => {

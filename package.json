@@ -9,7 +9,8 @@
     "gh-pages-clean": "gh-pages-clean",
     "deploy": "cargo web deploy --release && npm run gh-pages-publish",
     "lint": "cargo clippy",
-    "test": "cargo web test"
+    "test": "cargo web test",
+    "deploy-crazygames": "cargo web deploy --release && cp config.crazygames.json target/deploy/assets/config.json"
   },
   "author": "",
   "license": "ISC",

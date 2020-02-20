@@ -19,6 +19,8 @@ fn watch_resize_event(story: Story) {
   });
 }
 
+// TODO new ResizeObserver(outputsize).observe(textbox)
+
 fn main() {
   stdweb::initialize();
   let store: Store<State, Action> = get_store(reducer);

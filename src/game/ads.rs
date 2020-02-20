@@ -7,9 +7,11 @@ pub fn show_ad() {
   js! {
     console.log("Ads show.");
     if (!window.admob) return;
+    var android = @{unit_ad};
+    console.log(android);
     admob.interstitial.load({
       id: {
-        android: @{unit_ad},
+        android: android
       },
     }).then(() => admob.interstitial.show())
   }

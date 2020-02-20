@@ -1,5 +1,5 @@
 use crate::canvas::watch_click_event;
-use crate::game::{Action, Ball, State, equal_place, maybe_place_intersect, find_path, load_config, show_ad};
+use crate::game::{Action, Ball, State, equal_place, maybe_place_intersect, find_path, load_config, show_ad, load_ad};
 use crate::gui;
 use crate::store::Store;
 use crate::throttle::Throttle;
@@ -51,6 +51,7 @@ impl _Story {
       }
       Action::NewCanvas { canvas, .. } => {
         watch_click_event(story_rc, canvas);
+        load_ad();
         self.story(Action::AddBalls);
       }
       Action::Draw => {
@@ -151,6 +152,7 @@ impl _Story {
         let new_game_count = store.borrow().state.game.new_game_count;
         if new_game_count % 4 == 0 {
           show_ad();
+          load_ad();
         }
         self.story(Action::AddBalls);
       },

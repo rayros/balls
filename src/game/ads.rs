@@ -3,9 +3,17 @@ fn get_admob_unit_id() -> String {
 }
 
 pub fn show_ad() {
-  let unit_ad = get_admob_unit_id();
   js! {
     console.log("Ads show.");
+    if (!window.admob) return;
+    admob.interstitial.show();
+  }
+}
+
+pub fn load_ad() {
+  let unit_ad = get_admob_unit_id();
+  js! {
+    console.log("Ad load.");
     if (!window.admob) return;
     var android = @{unit_ad};
     console.log(android);
@@ -13,6 +21,6 @@ pub fn show_ad() {
       id: {
         android: android
       },
-    }).then(() => admob.interstitial.show())
+    });
   }
 }

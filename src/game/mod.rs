@@ -15,4 +15,4 @@ pub use state::SelectedBall;
 pub use selectors::{equal_place, maybe_place_intersect};
 pub use find_path::find_path;
 pub use load_config::load_config;
-pub use ads::show_ad;
+pub use ads::{show_ad, load_ad};

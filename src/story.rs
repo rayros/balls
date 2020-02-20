@@ -67,6 +67,9 @@ impl _Story {
       }
       Action::Click { x, y } => {
         let state: State = store.borrow().state.clone();
+        if state.game.animation.is_some() {
+          return;
+        }
         if state.game.new_game_button.intersect(x, y) {
           self.story(Action::NewGame);
         }

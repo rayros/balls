@@ -21,11 +21,16 @@ pub fn reducer(state: &State, action: &Action) -> State {
     Action::Draw => state.clone(),
     Action::WindowResize => state.clone(),
     Action::Click { .. } => state.clone(),
-    Action::CanvasResize { width, height } => State {
-      canvas_width: *width,
-      canvas_height: *height,
-      game: resize_game(state.clone()),
-      ..state.clone()
+    Action::CanvasResize { width, height } => {
+      let state = State {
+        canvas_width: *width,
+        canvas_height: *height,
+        ..state.clone()
+      };
+      State {
+        game: resize_game(state.clone()),
+        ..state
+      }
     },
     Action::NewCanvas {
       canvas,

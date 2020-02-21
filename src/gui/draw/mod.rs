@@ -5,7 +5,7 @@ mod traits;
 
 use draw_game::draw_game;
 
-pub fn draw(state: State) {
+pub fn draw(state: &State) {
   let canvas = state.canvas.clone();
   if canvas.is_some() {
     draw_game(state);

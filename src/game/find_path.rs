@@ -20,7 +20,7 @@ pub fn board_static_to_vec(board: &Board) -> Vec<Vec<Option<Ball>>> {
 
 pub fn find_path(board: &Board, start_place: Place, stop_place: Place) -> Option<Path> {
   let board = board_static_to_vec(board);
-  find_path_2d(board, start_place, stop_place)
+  find_path_2d(&board, start_place, stop_place)
 }
 
 #[derive(Default, Clone)]
@@ -42,7 +42,7 @@ fn fill_map_of_paths<T>(map: &[Vec<Option<T>>]) -> Vec<Vec<Option<PathPlace>>>{
   map_of_paths
 }
 
-fn find_path_2d<T>(map: Vec<Vec<Option<T>>>, start_place: Place, stop_place: Place) -> Option<Path> {
+fn find_path_2d<T>(map: &[Vec<Option<T>>], start_place: Place, stop_place: Place) -> Option<Path> {
   let mut map_of_paths: Vec<Vec<Option<PathPlace>>> = fill_map_of_paths(&map);
   let path_place = PathPlace {
     place: start_place,
@@ -70,13 +70,13 @@ fn find_path_2d<T>(map: Vec<Vec<Option<T>>>, start_place: Place, stop_place: Pla
     if place.column_index + 1 < map[place.row_index].len(){
       places_to_check.push(Place { row_index: place.row_index, column_index: place.column_index + 1 });
     }
-    for place_to_check in places_to_check.iter() {
+    for place_to_check in places_to_check {
       let row_index = place_to_check.row_index;
       let column_index = place_to_check.column_index;
 
-      if is_unchecked_place(&map, &map_of_paths, *place_to_check) {
+      if is_unchecked_place(&map, &map_of_paths, place_to_check) {
         let path_place = PathPlace {
-          place: *place_to_check,
+          place: place_to_check,
           place_before: Some(place),
           step: step + 1
         };

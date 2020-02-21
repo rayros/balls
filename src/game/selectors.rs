@@ -26,8 +26,8 @@ fn board_to_empty_places(board: &Board) -> Vec<Place> {
   vec
 }
 
-pub fn find_place_for_ball(board: Board) -> Option<Place> {
-  let empty_places = board_to_empty_places(&board);
+pub fn find_place_for_ball(board: &Board) -> Option<Place> {
+  let empty_places = board_to_empty_places(board);
   // console!(log, empty_places.clone());
   let place = empty_places.choose(&mut rand::thread_rng());
   place.cloned()
@@ -54,7 +54,9 @@ pub fn maybe_place_intersect(game: &Game, x: i32, y: i32) -> Option<Place> {
   let start_x = x - game.board_x;
   let start_y = y - game.board_y;
   if start_x > 0 && start_y > 0 {
+    #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     let column_index = f64::from(start_x / game.cell_width).floor() as usize;
+    #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     let row_index = f64::from(start_y / game.cell_width).floor() as usize;
     if row_index < game.board.len() && column_index < game.board[row_index].len() {
       return Some(Place { row_index, column_index });
@@ -63,6 +65,7 @@ pub fn maybe_place_intersect(game: &Game, x: i32, y: i32) -> Option<Place> {
   None
 }
 
+#[allow(clippy::cast_possible_wrap, clippy::cast_possible_truncation)]
 pub fn get_position_for_ball(game: &Game, place: &Place) -> (i32, i32) {
   // console!(log, row_index as u32);
   // console!(log, column_index as u32);

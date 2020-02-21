@@ -5,8 +5,8 @@ use stdweb::{Object};
 
 
 pub fn load(family: &str, source: &str, descriptors: Option<HashMap<&str, &str>>, story: Story) {
-  let _descriptors = descriptors.unwrap_or_default();
-  let descriptors_object = Object::from(_descriptors);
+  let descriptors = descriptors.unwrap_or_default();
+  let descriptors_object = Object::from(descriptors);
   let c = move || {
     story.borrow().story(Action::FontLoaded);
   };

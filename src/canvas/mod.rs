@@ -8,6 +8,7 @@ use stdweb::web::{document, CanvasRenderingContext2d};
 use stdweb::traits::*;
 use stdweb::unstable::TryInto;
 
+#[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
 pub fn resize_canvas_to_window_size(canvas: &CanvasElement) -> (i32, i32) {
   let width = window().inner_width();
   let height = window().inner_height();
@@ -16,7 +17,7 @@ pub fn resize_canvas_to_window_size(canvas: &CanvasElement) -> (i32, i32) {
   (width, height)
 }
 
-pub fn watch_click_event(story: Story, canvas: Canvas) {
+pub fn watch_click_event(story: Story, canvas: &Canvas) {
   canvas.element.add_event_listener({
     move |event: ClickEvent| {
       let x = event.client_x() as i32;

@@ -17,7 +17,7 @@ impl<S, A> _Store<S, A> {
     }
   }
 
-  pub fn dispatch(&mut self, action: A) {
+  pub fn dispatch(&mut self, action: &A) {
     self.state = (self.reducer)(&self.state, &action);
   }
 }

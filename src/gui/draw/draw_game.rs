@@ -48,7 +48,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
   fn draw_selected_ball(&self, selected_ball: SelectedBall) {
     let stroke_width = selected_ball.ball.radius / 10;
     self.set_stroke_style_color("black");
-    self.set_line_width(stroke_width as f64);
+    self.set_line_width(f64::from(stroke_width));
     self.begin_path();
     self.arc(f64::from(selected_ball.ball.position.0), f64::from(selected_ball.ball.position.1), f64::from(selected_ball.ball.radius - stroke_width / 2), 0.0, 2.0 * PI, false);
     if selected_ball.is_selected_color {
@@ -83,7 +83,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
     for i in 1..9 {
       fill_rect(self, board_x, board_y - (line_width / 2) + (cell_width * i), board_width, line_width);
     }
-    for ball in balls.into_iter() {
+    for ball in balls {
       if ball.num != 0 {
         self.draw_ball(ball);
       }
@@ -169,7 +169,7 @@ impl DrawGameCtx for CanvasRenderingContext2d {
   }
 }
 
-pub fn draw_game(state: State) {
+pub fn draw_game(state: &State) {
   let State {
     canvas,
     canvas_height,

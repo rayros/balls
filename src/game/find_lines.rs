@@ -8,7 +8,7 @@ use serde::Serialize;
 #[derive(Default, Serialize, Clone)]
 pub struct Line {
   pub balls: Vec<Ball>,
-  pub points: u32,
+  pub points: usize,
 }
 
 js_serializable!(Line);
@@ -30,15 +30,12 @@ pub fn find_lines(board: &Board) -> Vec<Line> {
   .concat()
 }
 
-fn get_points(balls_count: u32) -> u32 {
+fn get_points(balls_count: usize) -> usize {
   10 + (balls_count - 5) * 4
 }
 
 fn create_line(balls: Vec<Ball>) -> Line {
-  let balls_count = balls.len() as u32;
-  if balls_count < 5 {
-    console!(log, "Wrong", balls_count);
-  }
+  let balls_count = balls.len();
   Line {
     balls,
     points: get_points(balls_count),
@@ -110,7 +107,7 @@ mod tests {
   use crate::game::state::Place;
   use std::panic;
 
-  fn board_mock_to_vec(board: Vec<Vec<&str>>) -> Vec<Vec<Option<Ball>>> {
+  fn board_mock_to_vec(board: &[Vec<&str>]) -> Vec<Vec<Option<Ball>>> {
     let mut board_2d_vec: Vec<Vec<Option<Ball>>> = vec![];
     for row_item in board.iter() {
       let mut row_item_vec = vec![];
@@ -136,7 +133,7 @@ mod tests {
 
   #[test]
   fn test_check_columns() {
-    let board = board_mock_to_vec(vec![
+    let board = board_mock_to_vec(&vec![
       vec!["", "", "", "", "", "1"],
       vec!["", "", "", "", "", "1"],
       vec!["", "", "", "", "", "1"],
@@ -149,7 +146,7 @@ mod tests {
     console!(log, "");
     assert_eq!(points, 14, "Expected {} to be {}", points, 14);
 
-    let board = board_mock_to_vec(vec![
+    let board = board_mock_to_vec(&vec![
       vec!["", "", "", "", "", "1"],
       vec!["", "", "", "", "", "1"],
       vec!["", "", "", "", "", "1"],
@@ -162,7 +159,7 @@ mod tests {
     console!(log, "");
     assert_eq!(points, 10, "Expected {} to be {}", points, 10);
 
-    let board = board_mock_to_vec(vec![
+    let board = board_mock_to_vec(&vec![
       vec!["", "", "", "", "2", "1"],
       vec!["", "", "", "", "2", "1"],
       vec!["", "", "", "", "2", "1"],
@@ -178,7 +175,7 @@ mod tests {
 
   #[test]
   fn test_check_rows() {
-    let board = board_mock_to_vec(vec![
+    let board = board_mock_to_vec(&vec![
       vec!["1", "1", "1", "1", "1", "1"],
       vec!["", "", "", "", "", ""],
       vec!["", "", "", "", "", ""],
@@ -191,7 +188,7 @@ mod tests {
     console!(log, "");
     assert_eq!(points, 14, "Expected {} to be {}", points, 14);
 
-    let board = board_mock_to_vec(vec![
+    let board = board_mock_to_vec(&vec![
       vec!["", "1", "1", "1", "1", "1"],
       vec!["", "", "", "", "", ""],
       vec!["", "", "", "", "", ""],
@@ -204,7 +201,7 @@ mod tests {
     console!(log, "");
     assert_eq!(points, 10, "Expected {} to be {}", points, 10);
 
-    let board = board_mock_to_vec(vec![
+    let board = board_mock_to_vec(&vec![
       vec!["", "", "", "", "", ""],
       vec!["", "2", "2", "2", "2", "2"],
       vec!["", "", "", "", "", ""],
@@ -217,7 +214,7 @@ mod tests {
     assert_eq!(lines[0].points, 10, "Expected {} to be {}", points, 10);
     assert_eq!(lines[1].points, 14, "Expected {} to be {}", points, 14);
 
-    let board = board_mock_to_vec(vec![
+    let board = board_mock_to_vec(&vec![
       vec!["", "", "", "", "", ""],
       vec!["", "", "", "", "2", "2"],
       vec!["", "", "", "", "", ""],

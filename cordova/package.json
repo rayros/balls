@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "start": "npm --prefix=../ run release && rm -rf /tmp/lines-www && cp -r ../target/deploy /tmp/lines-www && cp www/index.html /tmp/lines-www && cp -r /tmp/lines-www/ www && cordova run android",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "resgen": "crgen -p android -i ./icon.png -I"
   },
   "keywords": [
     "ecosystem:cordova"

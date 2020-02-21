@@ -22,7 +22,7 @@ pub struct LinkButton {
   pub link: String
 }
 
-#[derive(Default, Serialize, Clone)]
+#[derive(Default, Serialize, Copy, Clone)]
 pub struct Place {
   pub row_index: usize,
   pub column_index: usize

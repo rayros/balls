@@ -82,7 +82,7 @@ fn animation_start(path: &[Place], state: &State) -> State {
   for path_place in path {
     animation_steps.push(Step {
       ball: Ball {
-        place: path_place.clone(),
+        place: *path_place,
         position: get_position_for_ball(&state.game, &path_place),
         ..selected_ball.ball
       }
@@ -374,7 +374,7 @@ fn add_ball(state: State) -> State {
       let ball = Ball {
         num,
         radius: get_radius(game.cell_width),
-        place: place.clone(),
+        place,
         position: get_position_for_ball(&game, &place),
       };
       let Place {

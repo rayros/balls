@@ -45,7 +45,7 @@ fn fill_map_of_paths<T>(map: &[Vec<Option<T>>]) -> Vec<Vec<Option<PathPlace>>>{
 fn find_path_2d<T>(map: Vec<Vec<Option<T>>>, start_place: Place, stop_place: Place) -> Option<Path> {
   let mut map_of_paths: Vec<Vec<Option<PathPlace>>> = fill_map_of_paths(&map);
   let path_place = PathPlace {
-    place: start_place.clone(),
+    place: start_place,
     place_before: None,
     step: 0
   };
@@ -54,7 +54,7 @@ fn find_path_2d<T>(map: Vec<Vec<Option<T>>>, start_place: Place, stop_place: Pla
   map_of_paths[row_index][column_index] = Some(path_place);
   while !path_places_to_search.is_empty() {
     let PathPlace { place, step, .. } = path_places_to_search.remove(0);
-    if equal_place(place.clone(), stop_place.clone()) {
+    if equal_place(place, stop_place) {
       return Some(get_path(stop_place, &map_of_paths));
     }
     let mut places_to_check = vec![];
@@ -74,10 +74,10 @@ fn find_path_2d<T>(map: Vec<Vec<Option<T>>>, start_place: Place, stop_place: Pla
       let row_index = place_to_check.row_index;
       let column_index = place_to_check.column_index;
 
-      if is_unchecked_place(&map, &map_of_paths, place_to_check.clone()) {
+      if is_unchecked_place(&map, &map_of_paths, *place_to_check) {
         let path_place = PathPlace {
-          place: place_to_check.clone(),
-          place_before: Some(place.clone()),
+          place: *place_to_check,
+          place_before: Some(place),
           step: step + 1
         };
         map_of_paths[row_index][column_index] = Some(path_place.clone());

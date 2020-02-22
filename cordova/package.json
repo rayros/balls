@@ -1,8 +1,8 @@
 {
-  "name": "helloworld",
-  "displayName": "HelloCordova",
-  "version": "1.0.0",
-  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "name": "lines-cordova",
+  "displayName": "Lines",
+  "version": "1.0.1",
+  "description": "Lines",
   "main": "index.js",
   "scripts": {
     "start": "npm --prefix=../ run release && rm -rf /tmp/lines-www && cp -r ../target/deploy /tmp/lines-www && cp www/index.html /tmp/lines-www && cp -r /tmp/lines-www/ www && cordova run android",

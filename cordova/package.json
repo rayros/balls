@@ -10,6 +10,7 @@
     "resgen": "crgen -p android -i ./icon.png -I",
     "cordova-set-version": "cordova-set-version ./config.xml",
     "postinstall": "npm run resgen && cordova telemetry off && cordova platform add android || true",
+    "build": "npm --prefix=../ run release && rm -rf /tmp/lines-www && cp -r ../target/deploy /tmp/lines-www && cp www/index.html /tmp/lines-www && cp -r /tmp/lines-www/ www && cordova build android",
     "release": "npm --prefix=../ run release && rm -rf /tmp/lines-www && cp -r ../target/deploy /tmp/lines-www && cp www/index.html /tmp/lines-www && cp -r /tmp/lines-www/ www && cordova build android --release"
   },
   "keywords": [

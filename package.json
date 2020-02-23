@@ -1,7 +1,7 @@
 {
   "name": "lines",
-  "version": "1.0.2",
-  "description": "",
+  "version": "1.0.3",
+  "description": "Lines - game",
   "main": "index.js",
   "scripts": {
     "start": "cargo web start --auto-reload",

@@ -50,10 +50,14 @@
   <body>
     <canvas id="canvas"></canvas>
     <script>
-      window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
-        alert("Error occured: " + errorMsg); //or any message
+      window.onerror = function(message, file, line, col, error) {
+        alert("Error occurred: " + error.message);
         return false;
       };
+      window.addEventListener("error", function(e) {
+        alert("Error occurred: " + e.error.message);
+        return false;
+      });
     </script>
     <script type="text/javascript" src="cordova.js"></script>
     <script>

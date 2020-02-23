@@ -3,3 +3,4 @@ www/*
 !www/index.html
 plugins
 platforms
+build.json

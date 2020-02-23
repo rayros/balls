@@ -15,12 +15,12 @@ pub fn load_ad() {
   js! {
     console.log("Ad load.");
     if (!window.admob) return;
-    var android = @{unit_ad};
-    console.log(android);
-    admob.interstitial.load({
+    var config = {
       id: {
-        android: android
-      },
-    });
+        android: @{unit_ad}
+      }
+    };
+    console.log(config);
+    admob.interstitial.load(config);
   }
 }
